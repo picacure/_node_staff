@@ -1,7 +1,7 @@
 template/v0.1/final.js
 
-modules/zepto/
-modules/util/
+module/zepto/
+module/util/
 
 module/shake/shake.js
 module/draw/draw.js
