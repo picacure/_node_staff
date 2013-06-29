@@ -6,10 +6,12 @@ var express = require("express"),
 
 server.listen(8181);
 
-console.log(__dirname);
+io.configure(function () {
+    io.set('log level', 0);
+    io.set('transports', ['xhr-polling']);
+});
 
 app.get('/', function (req, res) {
-    //res.sendfile(__dirname + 'index.html');
 });
 
 var pcSocket,
@@ -30,21 +32,23 @@ var pcSocket,
 io.sockets.on('connection', function (socket) {
 
     socket.on(MSG_TYPE.PC_CONNECT_REQ, function (data) {
+        console.log(data);
         pcSocket = socket;
     });
 
     socket.on(MSG_TYPE.M_CONNECT_REQ, function (data) {
+        console.log(data);
         mSocket = socket;
         if(pcSocket){
             pcSocket.emit(MSG_TYPE.PC_DATA_RES, { MobileUA: data });
         }
+    });
 
-        mSocket.on(MSG_TYPE.M_SHAKE_REQ, function (data) {
-
-            if(pcSocket){
-                pcSocket.emit(MSG_TYPE.PC_SHAKE_RES, { Shake: data });
-            }
-        });
+    socket.on(MSG_TYPE.M_SHAKE_REQ, function (data) {
+        console.log(data);
+        if(pcSocket){
+            pcSocket.emit(MSG_TYPE.PC_SHAKE_RES, { Shake: data });
+        }
     });
 });
 

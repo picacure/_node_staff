@@ -1660,11 +1660,11 @@ window.Zepto = Zepto
             deltaZ = 0;
 
         if(e.acceleration){
-            this.threshold = 10;
+            this.threshold = 0;
         }
         else{
             if(e.accelerationIncludingGravity){
-                this.threshold = 8;
+                this.threshold = 0;
             }
         }
 
@@ -1686,17 +1686,25 @@ window.Zepto = Zepto
             currentTime = new Date();
             timeDifference = currentTime.getTime() - this.lastTime.getTime();
 
-            this.shakeTimes++;
+//            this.shakeTimes++;
+//
+//            if(timeDifference > 800 && this.shakeTimes > 1){
+//                this.event.deltaX = current.x;
+//                this.event.deltaY = current.y;
+//                this.event.deltaZ = current.z;
+//                this.event.shakeTimes = this.shakeTimes;
+//                window.dispatchEvent(this.event);
+//                this.shakeTimes = 0;
+//                this.lastTime = new Date();
+//            }
 
-            if(timeDifference > 800 && this.shakeTimes > 1){
-                this.event.deltaX = current.x;
-                this.event.deltaY = current.y;
-                this.event.deltaZ = current.z;
-                this.event.shakeTimes = this.shakeTimes;
-                window.dispatchEvent(this.event);
-                this.shakeTimes = 0;
-                this.lastTime = new Date();
-            }
+            this.event.deltaX = current.x;
+            this.event.deltaY = current.y;
+            this.event.deltaZ = current.z;
+            this.event.shakeTimes = this.shakeTimes;
+            window.dispatchEvent(this.event);
+            this.shakeTimes = 0;
+            this.lastTime = new Date();
         }
     };
 
@@ -1719,11 +1727,15 @@ window.Zepto = Zepto
             wrapper = document.getElementById(domId)
             ;
 
-        myCanvas.style.width = getComputedStyle(wrapper,'width');
-        myCanvas.style.height = getComputedStyle(wrapper,'height');
+        myCanvas.style.width = getComputedStyle(wrapper).width;
+        myCanvas.style.height = getComputedStyle(wrapper).height;
 
         this.canvas = myCanvas;
+        this.canvas.width = parseInt(myCanvas.style.width);
+        this.canvas.height = parseInt(myCanvas.style.height);
+
         this.context = this.canvas.getContext('2d');
+
         this.line = [
             {
                 x:0,
@@ -1731,25 +1743,42 @@ window.Zepto = Zepto
             }
         ]
 
+        this.color = options.color || 'red';
+
         wrapper.appendChild(myCanvas);
     };
 
     draw.prototype.drawLine = function(xV,yV){
         var len = this.line.length - 1;
 
+        //解决clearRect失效的问题 http://stackoverflow.com/questions/9743027/clearrect-not-working
+        this.context.beginPath();
+
+        //old point.
         this.context.moveTo(this.line[len].x, this.line[len].y);
+
+        //new point.
         this.context.lineTo(xV, yV);
         this.context.lineWidth = 1;
-        this.context.strokeStyle = 'red';
+        this.context.strokeStyle = this.color;
         this.context.stroke();
 
         this.line.push({
             x:xV,
             y:yV
-        })
+        });
+    };
+
+    draw.prototype.size = function(){
+        return {
+            width: this.canvas.width,
+            height: this.canvas.height
+        }
     };
 
     draw.prototype.reset = function(){
+
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.line = [
             {
                 x:0,
@@ -2355,17 +2384,24 @@ var QRCode;
 
     var search = window.location.search.match(/\d{1,}/) || -1;
 
+    //PC页面
     if(search == -1){
         //生成二维码.
         generateQRCode();
         pcHandler();
     }
+    //Mobile 页面.
     else{
         mHandler(search);
     };
 
     var pcSocket;
-    var myDraw;
+    var xDraw,
+        yDraw,
+        zDraw,
+        hAxis,
+        vBase = 80
+        ;
     function pcHandler() {
         var serverUrl = window.location.origin + CONST_VAR.PORT
             ;
@@ -2379,7 +2415,10 @@ var QRCode;
             txt_notification('','新机器接入',data.MobileUA.UA || '');
         });
 
-        myDraw =  new Draw('myBoard',{});
+        xDraw =  new Draw('xBoard',{ color : 'red'});
+        yDraw =  new Draw('yBoard',{ color : 'green'});
+        zDraw =  new Draw('zBoard',{ color : 'blue'});
+        hAxis = 0;
 
         //晃动数据.
         pcSocket.on(MSG_TYPE.PC_SHAKE_RES, function(data){
@@ -2389,7 +2428,23 @@ var QRCode;
 
 
     function drawLine(data){
-        myDraw.drawLine(data.Shake.shakeArg.deltaX,data.Shake.shakeArg.deltaY);
+        document.getElementById('axisPad').innerHTML = 'X:' + data.Shake.shakeArg.deltaX +
+                                                            '<br>Y:' + data.Shake.shakeArg.deltaY +
+                                                                '<br>Z:' + data.Shake.shakeArg.deltaZ;
+
+
+
+        xDraw.drawLine(hAxis,data.Shake.shakeArg.deltaX + vBase);
+        yDraw.drawLine(hAxis,data.Shake.shakeArg.deltaY + vBase);
+        zDraw.drawLine(hAxis,data.Shake.shakeArg.deltaZ + vBase);
+
+        hAxis++;
+        if(hAxis > xDraw.size().width){
+            hAxis = (hAxis % xDraw.size().width);
+            xDraw.reset();
+            yDraw.reset();
+            zDraw.reset();
+        }
     }
 
     var mSocket;
@@ -2420,22 +2475,27 @@ var QRCode;
         shakeStart();
     }
 
-    window.addEventListener('shake', function(e){
 
-        document.getElementsByClassName('console')[0].innerText = e.deltaX;
-        document.getElementsByClassName('console')[1].innerText = e.deltaY;
-        document.getElementsByClassName('console')[2].innerText = e.deltaZ;
-        emitShake(e);
 
-    }, false);
-
-    function emitShake(e){
-        mSocket.emit(MSG_TYPE.M_SHAKE_REQ, {shakeArg: e});
+    function emitShake(obj){
+        mSocket.emit(MSG_TYPE.M_SHAKE_REQ, {shakeArg: obj});
     }
 
 
     var myShakeEvent;
     function shakeStart(){
+        window.addEventListener('shake', function(e){
+
+            document.getElementsByClassName('console')[0].innerText = e.deltaX;
+            document.getElementsByClassName('console')[1].innerText = e.deltaY;
+            document.getElementsByClassName('console')[2].innerText = e.deltaZ;
+            emitShake({
+                deltaX: e.deltaX,
+                deltaY: e.deltaY,
+                deltaZ: e.deltaZ
+            });
+
+        }, false);
         myShakeEvent = new window.Shake();
         myShakeEvent.start();
 

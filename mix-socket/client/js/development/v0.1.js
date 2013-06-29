@@ -18,17 +18,24 @@
 
     var search = window.location.search.match(/\d{1,}/) || -1;
 
+    //PC页面
     if(search == -1){
         //生成二维码.
         generateQRCode();
         pcHandler();
     }
+    //Mobile 页面.
     else{
         mHandler(search);
     };
 
     var pcSocket;
-    var myDraw;
+    var xDraw,
+        yDraw,
+        zDraw,
+        hAxis,
+        vBase = 80
+        ;
     function pcHandler() {
         var serverUrl = window.location.origin + CONST_VAR.PORT
             ;
@@ -42,7 +49,10 @@
             txt_notification('','新机器接入',data.MobileUA.UA || '');
         });
 
-        myDraw =  new Draw('myBoard',{});
+        xDraw =  new Draw('xBoard',{ color : 'red'});
+        yDraw =  new Draw('yBoard',{ color : 'green'});
+        zDraw =  new Draw('zBoard',{ color : 'blue'});
+        hAxis = 0;
 
         //晃动数据.
         pcSocket.on(MSG_TYPE.PC_SHAKE_RES, function(data){
@@ -52,7 +62,23 @@
 
 
     function drawLine(data){
-        myDraw.drawLine(data.Shake.shakeArg.deltaX,data.Shake.shakeArg.deltaY);
+        document.getElementById('axisPad').innerHTML = 'X:' + data.Shake.shakeArg.deltaX +
+                                                            '<br>Y:' + data.Shake.shakeArg.deltaY +
+                                                                '<br>Z:' + data.Shake.shakeArg.deltaZ;
+
+
+
+        xDraw.drawLine(hAxis,data.Shake.shakeArg.deltaX + vBase);
+        yDraw.drawLine(hAxis,data.Shake.shakeArg.deltaY + vBase);
+        zDraw.drawLine(hAxis,data.Shake.shakeArg.deltaZ + vBase);
+
+        hAxis++;
+        if(hAxis > xDraw.size().width){
+            hAxis = (hAxis % xDraw.size().width);
+            xDraw.reset();
+            yDraw.reset();
+            zDraw.reset();
+        }
     }
 
     var mSocket;
@@ -83,22 +109,27 @@
         shakeStart();
     }
 
-    window.addEventListener('shake', function(e){
 
-        document.getElementsByClassName('console')[0].innerText = e.deltaX;
-        document.getElementsByClassName('console')[1].innerText = e.deltaY;
-        document.getElementsByClassName('console')[2].innerText = e.deltaZ;
-        emitShake(e);
 
-    }, false);
-
-    function emitShake(e){
-        mSocket.emit(MSG_TYPE.M_SHAKE_REQ, {shakeArg: e});
+    function emitShake(obj){
+        mSocket.emit(MSG_TYPE.M_SHAKE_REQ, {shakeArg: obj});
     }
 
 
     var myShakeEvent;
     function shakeStart(){
+        window.addEventListener('shake', function(e){
+
+            document.getElementsByClassName('console')[0].innerText = e.deltaX;
+            document.getElementsByClassName('console')[1].innerText = e.deltaY;
+            document.getElementsByClassName('console')[2].innerText = e.deltaZ;
+            emitShake({
+                deltaX: e.deltaX,
+                deltaY: e.deltaY,
+                deltaZ: e.deltaZ
+            });
+
+        }, false);
         myShakeEvent = new window.Shake();
         myShakeEvent.start();
 
