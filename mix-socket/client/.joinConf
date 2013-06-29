@@ -1,0 +1,13 @@
+template/v0.1/final.js
+
+modules/zepto/
+modules/util/
+
+module/shake/shake.js
+module/draw/draw.js
+module/qr-code/qrcode.js
+module/tmpl/tmpl.js
+
+js/development/v0.1.js
+
+-outputs:js/production/v0.1.js

@@ -1,0 +1,40 @@
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <link href="http://jiangc.eu5.org/jc-docs/css/main.css" rel="stylesheet" type="text/css">
+    <!--<link rel="stylesheet/less" type="text/css" href="http://localhost/node/NodeJS/server/articles/client/less/main.less"/>-->
+</head>
+
+<body>
+
+<article class="dir">
+    <h1>JiangC's  Collections  by 江成</h1>
+
+	<hr class="hrs">
+	
+    <!-- 参数 type=1 -->
+    <h2>源码阅读笔记</h2>
+    <section>
+       <% 
+        for(var item in lib) {
+        %>
+        <h2><%= item%></h2>
+       <%
+            for(var i = 0,len = lib[item].length; i < len; i++){
+                for(var filename in lib[item][i]){
+
+       %>
+            <a href="?type=1&title=<%= lib[item][i][filename]%>"><%= filename%>阅读笔记</a>
+       <%
+                }
+            }
+        }    
+        %>
+    </section>
+
+    
+<article>
+</body>
+<script type="text/javascript"  src="http://1.picacure.sinaapp.com/libs/lessd1.3.0.js"></script>
+</html>

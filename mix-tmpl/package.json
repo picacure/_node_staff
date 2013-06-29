@@ -1,0 +1,26 @@
+{
+  "name": "mix-tmpl",
+  "version": "0.0.1",
+  "description": "simple js template file join together（将模板文件（html片段）打包生成JS文件）",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "mix-tmpl": "./bin/init.js"
+  },
+  "repository": "",
+  "keywords": [
+    "html template file join together",
+    ""
+  ],
+  "author": {
+    "name": "JiangC"
+  },
+  "dependencies": {
+  },
+  "license": "BSD",
+  "readme": "html template file join together",
+  "readmeFilename": "readme.txt",
+  "_id": "mix-tmpl@0.0.1",
+  "_from": "mix-tmpl"
+}
