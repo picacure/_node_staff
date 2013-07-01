@@ -61,10 +61,14 @@
 
             _self.$boatS.hide();
             _self.$boat.show();
+            _self.rock();
+        },
+        rock: function(){
+            var _self = this;
 
-            var rock = function(){
 
 
+            var rockFrame = function(){
                 _self.power -= 0.02;
 
                 if(_self.power > 0){
@@ -73,23 +77,25 @@
                     _self.$boat.css({
                         '-webkit-transform': 'translatex(' + _self.transWrapper + 'px)'
                     });
-
+                    //动画帧数.
+                    nextFrame(rockFrame);
                 }
                 else{
                     _self.power = 0;
                 }
+            }
 
-                //动画帧数.
-                nextFrame(rock);
-            };
-
-            rock();
+            rockFrame();
         },
         pump: function(pumpArg){
 
             //摇动加油.
             var _self = this;
             _self.power += 1;
+
+            //动画帧数.
+            nextFrame(_self.rock);
+
         },
         reset: function(){
 
