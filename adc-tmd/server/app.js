@@ -65,10 +65,20 @@ io.sockets.on('connection', function (socket) {
 
     //M端晃动数据.
     socket.on(MSG_TYPE.M_SHAKE_REQ, function (data) {
-
+        console.log(socket);
         if(pcSocket){
             pcSocket.emit(MSG_TYPE.PC_SHAKE_RES, data);
         }
     });
 });
+
+//for(var i = 0; i < MSocket.length; i++){
+//
+//    MSocket[i].on(MSG_TYPE.M_SHAKE_REQ, function (data) {
+//
+//        if(pcSocket){
+//            pcSocket.emit(MSG_TYPE.PC_SHAKE_RES, data);
+//        }
+//    });
+//}
 

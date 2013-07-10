@@ -1,7 +1,7 @@
 template/v0.1/final.js
 
-module/zepto/
-module/util/
+module/zepto/zepto.js
+module/util/util.js
 
 module/shake/shake.js
 module/eventEmitter/eventEmitter.js

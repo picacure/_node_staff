@@ -113,11 +113,11 @@
 
 
             var rockFrame = function(){
-                _self.power -= 0.02;
+                _self.power -= 0.01;
 
                 if(_self.power > 0){
                     //get translatex.
-                    if(!isRiverOver && _self.$river.css('webkitTransform')){
+                    if(_self.$river.css('webkitTransform')){
                         _self.riverTrans = +_self.$river.css('webkitTransform').match(/-\d*\.*\d*/g);
                         _self.riverTrans += (_self.power/2);
                     }
@@ -137,7 +137,7 @@
 
                         //二维码隐藏.
                         $('.mQrCode').hide();
-                        //到达终点
+                        //到达终点,发送消息
                         myEvent.emitEvent('Game-over',[_self.ID]);
                         return;
                     }

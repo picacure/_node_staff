@@ -6,7 +6,7 @@
     window.TMPL.mbody = $out;
 })(window);
 
-;/* Zepto v1.0-1-ga3cab6c - polyfill zepto detect event ajax form fx - zeptojs.com/license */
+/* Zepto v1.0-1-ga3cab6c - polyfill zepto detect event ajax form fx - zeptojs.com/license */
 
 
 ;(function(undefined){
@@ -1570,9 +1570,9 @@ window.Zepto = Zepto
   }
 
   testEl = null
-})(Zepto)
+})(Zepto);
 
-;(function(window){
+(function(window){
 
     if(!String.prototype.trim) {
         String.prototype.trim = function () {
@@ -1586,8 +1586,8 @@ window.Zepto = Zepto
         this.length = from < 0 ? this.length + from : from;
         return this.push.apply(this, rest);
     };
-})(window);
-;/*
+})(this);
+/*
  *
  * Find more about this plugin by visiting
  * 3ks to http://alxgbsn.co.uk/
@@ -1726,7 +1726,7 @@ window.Zepto = Zepto
 
 });
 
-;/*!
+/*!
  * EventEmitter v4.1.1 - git.io/ee
  * Oliver Caldwell
  * MIT license
@@ -2106,7 +2106,7 @@ window.Zepto = Zepto
         exports.EventEmitter = EventEmitter;
     }
 }(this));
-;/*! Socket.IO.js build:0.9.16, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+/*! Socket.IO.js build:0.9.16, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 var io = ('undefined' === typeof module ? {} : module.exports);
 (function() {
@@ -5979,7 +5979,7 @@ if (typeof define === "function" && define.amd) {
   define([], function () { return io; });
 }
 })();
-;//画图组件. by jiangC
+//画图组件. by jiangC
 (function(){
     var draw = function(domId,options){
         var myCanvas = document.createElement('canvas'),
@@ -6048,7 +6048,7 @@ if (typeof define === "function" && define.amd) {
 
     window.Draw = draw;
 })();
-;/**
+/**
  * @fileoverview
  * - Using the 'QRCode for Javascript library'
  * - Fixed dataset of 'QRCode for Javascript library' for support full-spec.
@@ -6546,7 +6546,7 @@ var QRCode;
 	 */
 	QRCode.CorrectLevel = QRErrorCorrectLevel;
 })();
-;/*
+/*
  * JavaScript Templates 2.1.0
  * https://github.com/blueimp/JavaScript-Templates
  *
@@ -6623,7 +6623,7 @@ var QRCode;
         $.tmpl = tmpl;
     }
 }(this));
-;(function ($,window) {
+(function ($,window) {
 
     var MSG_TYPE = {
         M_CONNECT_REQ:'M_CONNECT_REQ',
@@ -6738,11 +6738,11 @@ var QRCode;
 
 
             var rockFrame = function(){
-                _self.power -= 0.02;
+                _self.power -= 0.01;
 
                 if(_self.power > 0){
                     //get translatex.
-                    if(!isRiverOver && _self.$river.css('webkitTransform')){
+                    if(_self.$river.css('webkitTransform')){
                         _self.riverTrans = +_self.$river.css('webkitTransform').match(/-\d*\.*\d*/g);
                         _self.riverTrans += (_self.power/2);
                     }
@@ -6762,7 +6762,7 @@ var QRCode;
 
                         //二维码隐藏.
                         $('.mQrCode').hide();
-                        //到达终点
+                        //到达终点,发送消息
                         myEvent.emitEvent('Game-over',[_self.ID]);
                         return;
                     }
@@ -6985,4 +6985,3 @@ var QRCode;
 
 
 })(Zepto,window);
-;
