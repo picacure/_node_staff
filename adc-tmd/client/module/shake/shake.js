@@ -81,7 +81,7 @@
         }
         else{
             if(e.accelerationIncludingGravity){
-                this.threshold = 8;
+                this.threshold = 15;
             }
         }
 

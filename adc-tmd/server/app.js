@@ -15,37 +15,57 @@ app.get('/', function (req, res) {
 });
 
 var pcSocket,
-    mSocket,
     MSG_TYPE = {
         M_CONNECT_REQ:'M_CONNECT_REQ',
         M_CONNECT_RES:'M_CONNECT_RES',
         M_SHAKE_REQ:'M_SHAKE_REQ',
         M_SHAKE_RES:'M_SHAKE_RES',
+        M_REPLAY:'M_REPLAY',
 
         PC_CONNECT_REQ:'PC_CONNECT_REQ',  //PC连接请求.
         PC_DATA_RES:'PC_DATA_RES',         //PC数据输出.
 
-        PC_SHAKE_RES:'PC_SHAKE_RES'
+        PC_SHAKE_RES:'PC_SHAKE_RES',
+
+        PC_REPLAY:'PC_REPLAY'  //重玩
     }
+    ;
+
+var MSocket = []
     ;
 
 io.sockets.on('connection', function (socket) {
 
+    //PC端接入.
     socket.on(MSG_TYPE.PC_CONNECT_REQ, function (data) {
         console.log(data);
         pcSocket = socket;
     });
 
+    //M端接入.
     socket.on(MSG_TYPE.M_CONNECT_REQ, function (data) {
         console.log(data);
-        mSocket = socket;
+        MSocket.push(socket);
         if(pcSocket){
             pcSocket.emit(MSG_TYPE.PC_DATA_RES, data);
         }
     });
 
+    //重玩.
+    socket.on(MSG_TYPE.PC_REPLAY, function (data) {
+        if(MSocket.length > 0){
+            for(var i = 0,len = MSocket.length; i < len; i++){
+                MSocket[i].emit(MSG_TYPE.M_REPLAY, data);
+            }
+
+            console.log(data);
+            MSocket = [];
+        }
+    });
+
+    //M端晃动数据.
     socket.on(MSG_TYPE.M_SHAKE_REQ, function (data) {
-        console.log(data);
+
         if(pcSocket){
             pcSocket.emit(MSG_TYPE.PC_SHAKE_RES, data);
         }

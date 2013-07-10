@@ -5,16 +5,23 @@
         M_CONNECT_RES:'M_CONNECT_RES',
         M_SHAKE_REQ:'M_SHAKE_REQ',
         M_SHAKE_RES:'M_SHAKE_RES',
+        M_REPLAY:'M_REPLAY',
 
         PC_CONNECT_REQ:'PC_CONNECT_REQ',
         PC_DATA_RES:'PC_DATA_RES',
 
-        PC_SHAKE_RES:'PC_SHAKE_RES'
+        PC_SHAKE_RES:'PC_SHAKE_RES',
+
+        PC_REPLAY:'PC_REPLAY'  //重玩
     };
 
     var CONST_VAR = {
         PORT: ':8181/'
     };
+
+    var pc,  //PC页面
+        mm   //Mobile页面
+        ;
 
 
     var nextFrame = (function() {
@@ -25,6 +32,37 @@
             || window.msRequestAnimationFrame
             || function(callback) { return setTimeout(callback, 17); }
     })();
+
+
+    var myEvent = new EventEmitter(),
+        whoWin = ''
+        ;
+
+    myEvent.addListener('Game-over', function(ID){
+        for(var i = 0,len = pc.boatArr.length,boatID; i < len; i++){
+            boatID = pc.boatArr[i].getID();
+            if(ID == boatID){
+                pc.boatArr.remove(i);
+
+                //赢家.
+                if(whoWin == ''){
+                    whoWin = boatID;
+                }
+            }
+        }
+
+        //都到达终点刷新页面.
+        if(pc.boatArr.length == 0){
+            pc.getSocket().emit(MSG_TYPE.PC_REPLAY, { winID: whoWin });
+
+            setTimeout(function(){
+                window.location.reload();
+            },2000);
+        }
+    });
+
+    //河流是否到尽头，减少渲染.
+    var isRiverOver = false;
     var BOAT = function(id){
         this.ID = id;
 
@@ -36,6 +74,11 @@
 
         //动力系数.
         this.power = 3;
+
+        //河水.
+        this.$river = $('.river');
+
+        this.riverTrans = -1370;
 
         this.dist = 0;
 
@@ -64,7 +107,8 @@
             _self.rock();
         },
         rock: function(){
-            var _self = this;
+            var _self = this
+                ;
 
 
 
@@ -72,16 +116,51 @@
                 _self.power -= 0.02;
 
                 if(_self.power > 0){
+                    //get translatex.
+                    if(!isRiverOver && _self.$river.css('webkitTransform')){
+                        _self.riverTrans = +_self.$river.css('webkitTransform').match(/-\d*\.*\d*/g);
+                        _self.riverTrans += (_self.power/2);
+                    }
                     _self.transWrapper -= _self.power;
 
-                    _self.$boat.css({
-                        '-webkit-transform': 'translatex(' + _self.transWrapper + 'px)'
-                    });
+                    //船移动.
+                    if(_self.transWrapper > 0){
+                        _self.$boat.css({
+                            '-webkit-transform': 'translatex(' + _self.transWrapper + 'px)'
+                        });
+                    }
+                    else{
+                        _self.$boat.hide();
+                        _self.$boatS.css({
+                            '-webkit-transform': 'translatex(0px)'
+                        }).show();
+
+                        //二维码隐藏.
+                        $('.mQrCode').hide();
+                        //到达终点
+                        myEvent.emitEvent('Game-over',[_self.ID]);
+                        return;
+                    }
+
+
+                    //河流移动.
+                    if(_self.riverTrans < 0){
+                        _self.$river.css({
+                            '-webkit-transform': 'translatex(' + _self.riverTrans + 'px)'
+                        });
+                    }
+                    else{
+                        //河流到尽头.
+                        isRiverOver = true;
+                    }
+
                     //动画帧数.
                     nextFrame(rockFrame);
                 }
                 else{
                     _self.power = 0;
+
+                    nextFrame(rockFrame);
                 }
             }
 
@@ -93,8 +172,10 @@
             var _self = this;
             _self.power += 1;
 
-            //动画帧数.
-            nextFrame(_self.rock);
+            //上线.
+            if(_self.power > 20){
+                _self.power = 20;
+            }
 
         },
         reset: function(){
@@ -127,7 +208,6 @@
 
             //新的终端接入.
             _self.socket.on(MSG_TYPE.PC_DATA_RES, function (data) {
-//                txt_notification('','新机器接入',data.MobileUA.UA || '');
                 var boat = new BOAT(data.ID);
 
                 _self.boatArr.push(boat);
@@ -142,7 +222,7 @@
             //晃动数据.
             _self.socket.on(MSG_TYPE.PC_SHAKE_RES, function(data){
                 //分配动画数据.
-                //alert(data.shakeArg.ID);
+                //$('.spray').text(data.shakeArg.ID + Date.now());
 
                 for(var i = 0,len = _self.boatArr.length; i < len; i++){
                     if(_self.boatArr[i].getID() == data.shakeArg.ID){
@@ -155,6 +235,9 @@
                     }
                 }
             });
+        },
+        getSocket: function(){
+            return this.socket;
         },
         generateQRCode: function(){
             var urlDir = window.location.href;
@@ -207,8 +290,20 @@
                 UA: navigator.userAgent
             });
 
+            //test.
             this.socket.on(MSG_TYPE.M_CONNECT_RES, function (data) {
                 alert(data);
+            });
+
+            //重玩.
+            this.socket.on(MSG_TYPE.M_REPLAY, function (data) {
+                if(data.winID == _self.ID) {
+                    $('.mID').html("恭喜，你赢啦！！！！<br>扫描二维码重玩");
+                }
+                else{
+                    $('.mID').html("矮油，输咯～～～～<br>扫描二维码重玩");
+                }
+
             });
         },
         startShake: function(){
@@ -219,9 +314,10 @@
 
             window.addEventListener('shake', function(e){
 
-                $console.eq(0).text(e.deltaX);
-                $console.eq(1).text(e.deltaY);
-                $console.eq(2).text(e.deltaZ);
+                //M端显示三个轴的信息.
+//                $console.eq(0).text(e.deltaX);
+//                $console.eq(1).text(e.deltaY);
+//                $console.eq(2).text(e.deltaZ);
 
                 _self.emitShake({
                     ID: _self.ID,
@@ -240,13 +336,14 @@
         }
     };
 
+
     var Route =  {
         search: window.location.search.match(/id=(\w*)/) || '-1',
         router: function(){
 
             //PC页面
             if(Route.search == '-1'){
-                var pc = new PC();
+                pc = new PC();
             }
             //Mobile 页面.
             else{
@@ -254,7 +351,7 @@
                 var result = tmpl(window.TMPL.mbody, { ID: Route.search[1]});
                 $('#wrapper').html(result);
 
-                var mm = new MOBILE(Route.search[1]);
+                mm = new MOBILE(Route.search[1]);
             };
         }
     };
