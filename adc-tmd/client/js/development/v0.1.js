@@ -3,12 +3,17 @@
     var MSG_TYPE = {
         M_CONNECT_REQ:'M_CONNECT_REQ',
         M_CONNECT_RES:'M_CONNECT_RES',
+        M_TOKEN_INVALID:'M_TOKEN_INVALID',
+        M_TOKEN_OK:'M_TOKEN_OK',
+        M_SHAKE_INIT:'M_SHAKE_INIT',     //PC通知M端开始摇晃.
         M_SHAKE_REQ:'M_SHAKE_REQ',
         M_SHAKE_RES:'M_SHAKE_RES',
         M_REPLAY:'M_REPLAY',
 
         PC_CONNECT_REQ:'PC_CONNECT_REQ',
-        PC_DATA_RES:'PC_DATA_RES',
+        PC_M_CONNECT_RES:'PC_M_CONNECT_RES',
+        PC_M_ALL_CONNECT_RES:'PC_M_ALL_CONNECT_RES',         //所有 M端接入.
+        PC_M_SHAKE_START_TIP:'PC_M_SHAKE_START_TIP',   //通知所有M端开始摇晃.
 
         PC_SHAKE_RES:'PC_SHAKE_RES',
 
@@ -68,12 +73,14 @@
 
         //静态图片.
         this.$boatS = $('.' + id);
+        //隐藏二维码.
+        this.$boatS.find('.mQrCode').hide();
 
         //动态船.
         this.$boat = $('.' + id.toString().substr(0,id.toString().length - 1));
 
         //动力系数.
-        this.power = 3;
+        this.power = 2;
 
         //河水.
         this.$river = $('.river');
@@ -119,7 +126,7 @@
                     //get translatex.
                     if(_self.$river.css('webkitTransform')){
                         _self.riverTrans = +_self.$river.css('webkitTransform').match(/-\d*\.*\d*/g);
-                        _self.riverTrans += (_self.power/2);
+                        _self.riverTrans += (_self.power*0.65);
                     }
                     _self.transWrapper -= _self.power;
 
@@ -185,10 +192,12 @@
 
 
     var PC = function(){
-        this.initSocket();
-        this.listen();
+
         //生成二维码.
         this.generateQRCode();
+
+        this.initSocket();
+        this.listen();
 
         this.boatArr = [];
     };
@@ -201,23 +210,51 @@
         },
         listen: function(){
 
-            var _self = this;
+            var _self = this,
+                tokenArr = [],
+                $mQrCode = $('.mQrCode')
+                ;
+
+            for(var i = 0, len = $mQrCode.length; i < len; i++){
+                tokenArr.push($mQrCode.eq(i).attr('data-token'));
+            }
 
             //连接，确定一个server socket.
-            _self.socket.emit(MSG_TYPE.PC_CONNECT_REQ, {});
+            _self.socket.emit(MSG_TYPE.PC_CONNECT_REQ, { Token: tokenArr });
 
             //新的终端接入.
-            _self.socket.on(MSG_TYPE.PC_DATA_RES, function (data) {
+            _self.socket.on(MSG_TYPE.PC_M_CONNECT_RES, function (data) {
                 var boat = new BOAT(data.ID);
 
                 _self.boatArr.push(boat);
                 //隐藏二维码，显示ID.
-
-
-                //开始动画.
-                boat.animate();
             });
 
+            //所有终端接入.
+            _self.socket.on(MSG_TYPE.PC_M_ALL_CONNECT_RES, function (data) {
+                this.emit(MSG_TYPE.PC_M_SHAKE_START_TIP, {});
+
+                var countTick = 3,
+                    countInter,
+                    $djs = $('.djs')
+                    ;
+
+                countInter = setInterval(function(){
+                    if(countTick == 0){
+                        $djs.text('GO').animate({ opacity: 0 },2000, 'ease-out');
+                        clearInterval(countInter);
+
+                        //开始动画.
+                        for(var i = 0,len = _self.boatArr.length; i < len; i++){
+                            _self.boatArr[i].animate();
+                        }
+                    }
+                    else{
+                        $djs.text(countTick--);
+                    }
+                },1000);
+
+            });
 
             //晃动数据.
             _self.socket.on(MSG_TYPE.PC_SHAKE_RES, function(data){
@@ -230,8 +267,6 @@
                         //获得一次动力.
                         _self.boatArr[i].pump(data.shakeArg);
 
-                        //获取数据，演示动画.
-                        //_self.boatArr[i].animate(data.shakeArg);
                     }
                 }
             });
@@ -252,11 +287,16 @@
                 correctLevel:QRCode.CorrectLevel.H
             }
 
-            for (var i = 0, mUrl = '' , len = $mQrCode.length; i < len; i++) {
+            for (var i = 0, mUrl = '' , len = $mQrCode.length , tToken; i < len; i++) {
                 mUrl = '';
+                tToken = Date.now();
 
-                //生成className  ID
-                mUrl += urlDir + '?id=' + $mQrCode.eq(i).parent()[0].className;
+                //生成className  ID  、token
+                mUrl += urlDir + '?id=' + $mQrCode.eq(i).parent()[0].className + '&token=' + tToken;
+
+                //记录Token串.
+                $mQrCode.eq(i).attr('data-token',tToken);
+
                 qrCodeConfig.text = mUrl;
                 new QRCode($mQrCode[i], qrCodeConfig);
             }
@@ -266,11 +306,11 @@
 
 
 
-    var MOBILE =  function(id){
+    var MOBILE =  function(id,token){
         this.ID = id;
+        this.Token = token;
         this.initSocket();
         this.listener();
-        this.startShake();
     };
 
     MOBILE.prototype = {
@@ -287,13 +327,27 @@
             //连接，接入.
             this.socket.emit(MSG_TYPE.M_CONNECT_REQ, {
                 ID: _self.ID,
-                UA: navigator.userAgent
+                UA: navigator.userAgent,
+                Token: _self.Token
             });
 
-            //test.
-            this.socket.on(MSG_TYPE.M_CONNECT_RES, function (data) {
-                alert(data);
+            //Token 失效.
+            this.socket.on(MSG_TYPE.M_TOKEN_INVALID, function (data) {
+                $('.mID').html('Token 失效<br>请重新扫描二维码');
             });
+
+            //正常接入.
+            this.socket.on(MSG_TYPE.M_TOKEN_OK, function (data) {
+                $('.mID').html('成功接入');
+            });
+
+            //所有终端都已接入.
+            this.socket.on(MSG_TYPE.M_SHAKE_INIT, function (data) {
+
+                $('.mID').html('开始摇晃');
+                _self.startShake();
+            });
+
 
             //重玩.
             this.socket.on(MSG_TYPE.M_REPLAY, function (data) {
@@ -338,7 +392,8 @@
 
 
     var Route =  {
-        search: window.location.search.match(/id=(\w*)/) || '-1',
+        search: window.location.search.match(/id=(\w*)/) || '-1',   //ID
+        token: window.location.search.match(/token=(\w*)/) || '-1',    //Token
         router: function(){
 
             //PC页面
@@ -351,7 +406,7 @@
                 var result = tmpl(window.TMPL.mbody, { ID: Route.search[1]});
                 $('#wrapper').html(result);
 
-                mm = new MOBILE(Route.search[1]);
+                mm = new MOBILE(Route.search[1],Route.token[1]);
             };
         }
     };
