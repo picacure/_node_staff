@@ -8,7 +8,11 @@ server.listen(8181);
 
 io.configure(function () {
     io.set('log level', 0);
-    io.set('transports', ['xhr-polling']);
+    io.set('transports', ['websocket',
+                            'xhr-polling',
+                            'htmlfile',
+                            'jsonp-polling',
+                            'flashsocket']);
 });
 
 app.get('/', function (req, res) {

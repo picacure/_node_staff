@@ -8,13 +8,15 @@ var filter = '.js',
 	;
 
 //读取配置文件.
-function readFromConfig(dir){
-	var data = fs.readFileSync(dir + '\\' + '.joinConf','utf-8'),
+function readFromConfig(dir,file){
+	var data = fs.readFileSync(file,'utf-8'),
 		dirs = data.split('\r\n'),
 		matchDir = '',
 		stat	
 		;
 
+
+	
 
 	for(var i = 0; i < dirs.length; i++){
 
@@ -120,9 +122,9 @@ function joinAll(){
 }
 
 
-function init(dirOrFile){
+function init(dir,File){
 	filterArr = [];
-	if(readFromConfig(dirOrFile)){
+	if(readFromConfig(dir,File)){
 		joinAll();		
 	}
 }

@@ -53,6 +53,8 @@
                 if(whoWin == ''){
                     whoWin = boatID;
                 }
+
+                break;
             }
         }
 
@@ -62,22 +64,39 @@
 
             setTimeout(function(){
                 window.location.reload();
-            },2000);
+            },3000);
         }
     });
 
     //河流是否到尽头，减少渲染.
     var isRiverOver = false;
     var BOAT = function(id){
-        this.ID = id;
+        if(id.toString().toLowerCase().indexOf('boatas') > -1){
+            //静态图片.
+            this.$boatS = $('.boatAS');
 
-        //静态图片.
-        this.$boatS = $('.' + id);
+            this.ID = 'boatAS';
+
+            //动态船.
+            this.$boat = $('.boatA');
+        }
+        else if(id.toString().toLowerCase().indexOf('boatbs') > -1){
+            //静态图片.
+            this.$boatS = $('.boatBS');
+
+            this.ID = 'boatBS';
+
+            //动态船.
+            this.$boat = $('.boatB');
+        }
+        else{
+            throw Error('Boat init ,wrong ID');
+        }
+
         //隐藏二维码.
         this.$boatS.find('.mQrCode').hide();
 
-        //动态船.
-        this.$boat = $('.' + id.toString().substr(0,id.toString().length - 1));
+
 
         //动力系数.
         this.power = 2;
@@ -344,7 +363,7 @@
             //所有终端都已接入.
             this.socket.on(MSG_TYPE.M_SHAKE_INIT, function (data) {
 
-                $('.mID').html('开始摇晃');
+                $('.mID').html('准备摇晃手机');
                 _self.startShake();
             });
 
@@ -357,7 +376,6 @@
                 else{
                     $('.mID').html("矮油，输咯～～～～<br>扫描二维码重玩");
                 }
-
             });
         },
         startShake: function(){

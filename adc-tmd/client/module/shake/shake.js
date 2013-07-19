@@ -77,7 +77,7 @@
             deltaZ = 0;
 
         if(e.acceleration){
-            this.threshold = 10;
+            this.threshold = 13;
         }
         else{
             if(e.accelerationIncludingGravity){
@@ -105,7 +105,7 @@
 
             this.shakeTimes++;
 
-            if(timeDifference > 800 && this.shakeTimes > 4){
+            if(timeDifference > 800 && this.shakeTimes > 5){
                 this.event.deltaX = current.x;
                 this.event.deltaY = current.y;
                 this.event.deltaZ = current.z;

@@ -1,12 +1,12 @@
 (function (window) {
     var $out = "";
-    $out += '<div class="mbox">\r\n    <div class="txt">龙舟比赛</div>\r\n    <div class="mID">{%= o.ID%}</div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n</div>\r\n';
+    $out += '<div class="mbox">\r\n    <div class="txt">龙舟比赛</div>\r\n    <div class="mID"><img src="./images/wait.gif" alt=""></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n</div>\r\n';
 
     window.TMPL = {};
     window.TMPL.mbody = $out;
 })(window);
 
-;/* Zepto v1.0-1-ga3cab6c - polyfill zepto detect event ajax form fx - zeptojs.com/license */
+/* Zepto v1.0-1-ga3cab6c - polyfill zepto detect event ajax form fx - zeptojs.com/license */
 
 
 ;(function(undefined){
@@ -1572,7 +1572,7 @@ window.Zepto = Zepto
   testEl = null
 })(Zepto);
 
-;(function(window){
+(function(window){
 
     if(!String.prototype.trim) {
         String.prototype.trim = function () {
@@ -1598,7 +1598,7 @@ window.Zepto = Zepto
         return false;
     }
 })(this);
-;/*
+/*
  *
  * Find more about this plugin by visiting
  * 3ks to http://alxgbsn.co.uk/
@@ -1677,7 +1677,7 @@ window.Zepto = Zepto
             deltaZ = 0;
 
         if(e.acceleration){
-            this.threshold = 10;
+            this.threshold = 13;
         }
         else{
             if(e.accelerationIncludingGravity){
@@ -1705,7 +1705,7 @@ window.Zepto = Zepto
 
             this.shakeTimes++;
 
-            if(timeDifference > 800 && this.shakeTimes > 4){
+            if(timeDifference > 800 && this.shakeTimes > 5){
                 this.event.deltaX = current.x;
                 this.event.deltaY = current.y;
                 this.event.deltaZ = current.z;
@@ -1737,7 +1737,7 @@ window.Zepto = Zepto
 
 });
 
-;/*!
+/*!
  * EventEmitter v4.1.1 - git.io/ee
  * Oliver Caldwell
  * MIT license
@@ -2117,7 +2117,7 @@ window.Zepto = Zepto
         exports.EventEmitter = EventEmitter;
     }
 }(this));
-;/*! Socket.IO.js build:0.9.16, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+/*! Socket.IO.js build:0.9.16, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 var io = ('undefined' === typeof module ? {} : module.exports);
 (function() {
@@ -5990,7 +5990,7 @@ if (typeof define === "function" && define.amd) {
   define([], function () { return io; });
 }
 })();
-;//画图组件. by jiangC
+//画图组件. by jiangC
 (function(){
     var draw = function(domId,options){
         var myCanvas = document.createElement('canvas'),
@@ -6059,7 +6059,7 @@ if (typeof define === "function" && define.amd) {
 
     window.Draw = draw;
 })();
-;/**
+/**
  * @fileoverview
  * - Using the 'QRCode for Javascript library'
  * - Fixed dataset of 'QRCode for Javascript library' for support full-spec.
@@ -6557,7 +6557,7 @@ var QRCode;
 	 */
 	QRCode.CorrectLevel = QRErrorCorrectLevel;
 })();
-;/*
+/*
  * JavaScript Templates 2.1.0
  * https://github.com/blueimp/JavaScript-Templates
  *
@@ -6634,7 +6634,7 @@ var QRCode;
         $.tmpl = tmpl;
     }
 }(this));
-;(function ($,window) {
+(function ($,window) {
 
     var MSG_TYPE = {
         M_CONNECT_REQ:'M_CONNECT_REQ',
@@ -6689,6 +6689,8 @@ var QRCode;
                 if(whoWin == ''){
                     whoWin = boatID;
                 }
+
+                break;
             }
         }
 
@@ -6698,22 +6700,39 @@ var QRCode;
 
             setTimeout(function(){
                 window.location.reload();
-            },2000);
+            },3000);
         }
     });
 
     //河流是否到尽头，减少渲染.
     var isRiverOver = false;
     var BOAT = function(id){
-        this.ID = id;
+        if(id.toString().toLowerCase().indexOf('boatas') > -1){
+            //静态图片.
+            this.$boatS = $('.boatAS');
 
-        //静态图片.
-        this.$boatS = $('.' + id);
+            this.ID = 'boatAS';
+
+            //动态船.
+            this.$boat = $('.boatA');
+        }
+        else if(id.toString().toLowerCase().indexOf('boatbs') > -1){
+            //静态图片.
+            this.$boatS = $('.boatBS');
+
+            this.ID = 'boatBS';
+
+            //动态船.
+            this.$boat = $('.boatB');
+        }
+        else{
+            throw Error('Boat init ,wrong ID');
+        }
+
         //隐藏二维码.
         this.$boatS.find('.mQrCode').hide();
 
-        //动态船.
-        this.$boat = $('.' + id.toString().substr(0,id.toString().length - 1));
+
 
         //动力系数.
         this.power = 2;
@@ -6980,7 +6999,7 @@ var QRCode;
             //所有终端都已接入.
             this.socket.on(MSG_TYPE.M_SHAKE_INIT, function (data) {
 
-                $('.mID').html('开始摇晃');
+                $('.mID').html('准备摇晃手机');
                 _self.startShake();
             });
 
@@ -6993,7 +7012,6 @@ var QRCode;
                 else{
                     $('.mID').html("矮油，输咯～～～～<br>扫描二维码重玩");
                 }
-
             });
         },
         startShake: function(){
@@ -7051,4 +7069,3 @@ var QRCode;
 
 
 })(Zepto,window);
-;
