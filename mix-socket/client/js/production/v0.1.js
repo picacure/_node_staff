@@ -1701,11 +1701,17 @@ window.Zepto = Zepto
             this.event.deltaX = current.x;
             this.event.deltaY = current.y;
             this.event.deltaZ = current.z;
+            this.event.absXYZ = getAbsolute(current.x,current.y,current.z);
             this.event.shakeTimes = this.shakeTimes;
             window.dispatchEvent(this.event);
             this.shakeTimes = 0;
             this.lastTime = new Date();
         }
+    };
+
+    //拟合算子.
+    function getAbsolute(x,y,z){
+        return (x + y + z);
     };
 
     //event handler
@@ -2364,7 +2370,7 @@ var QRCode;
         $.tmpl = tmpl;
     }
 }(this));
-;(function () {
+;(function ($) {
 
     var MSG_TYPE = {
         M_CONNECT_REQ:'M_CONNECT_REQ',
@@ -2384,6 +2390,8 @@ var QRCode;
 
     var search = window.location.search.match(/\d{1,}/) || -1;
 
+    var swc = false;
+
     //PC页面
     if(search == -1){
         //生成二维码.
@@ -2399,6 +2407,7 @@ var QRCode;
     var xDraw,
         yDraw,
         zDraw,
+        absXYZDraw,
         hAxis,
         vBase = 80
         ;
@@ -2418,6 +2427,7 @@ var QRCode;
         xDraw =  new Draw('xBoard',{ color : 'red'});
         yDraw =  new Draw('yBoard',{ color : 'green'});
         zDraw =  new Draw('zBoard',{ color : 'blue'});
+        absXYZDraw =  new Draw('absXYZ',{ color : 'red'});
         hAxis = 0;
 
         //晃动数据.
@@ -2426,25 +2436,30 @@ var QRCode;
         });
     }
 
-
+    var step = 3;
     function drawLine(data){
-        document.getElementById('axisPad').innerHTML = 'X:' + data.Shake.shakeArg.deltaX +
-                                                            '<br>Y:' + data.Shake.shakeArg.deltaY +
-                                                                '<br>Z:' + data.Shake.shakeArg.deltaZ;
+        if(!swc){
+            document.getElementById('axisPad').innerHTML = 'X:' + data.Shake.shakeArg.deltaX +
+                '<br>Y:' + data.Shake.shakeArg.deltaY +
+                '<br>Z:' + data.Shake.shakeArg.deltaZ;
 
 
 
-        xDraw.drawLine(hAxis,data.Shake.shakeArg.deltaX + vBase);
-        yDraw.drawLine(hAxis,data.Shake.shakeArg.deltaY + vBase);
-        zDraw.drawLine(hAxis,data.Shake.shakeArg.deltaZ + vBase);
+            xDraw.drawLine(hAxis,data.Shake.shakeArg.deltaX + vBase);
+            yDraw.drawLine(hAxis,data.Shake.shakeArg.deltaY + vBase);
+            zDraw.drawLine(hAxis,data.Shake.shakeArg.deltaZ + vBase);
+            absXYZDraw.drawLine(hAxis,data.Shake.shakeArg.absXYZ + vBase);
 
-        hAxis++;
-        if(hAxis > xDraw.size().width){
-            hAxis = (hAxis % xDraw.size().width);
-            xDraw.reset();
-            yDraw.reset();
-            zDraw.reset();
+            hAxis += step;
+            if(hAxis > xDraw.size().width){
+                hAxis = (hAxis % xDraw.size().width);
+                xDraw.reset();
+                yDraw.reset();
+                zDraw.reset();
+                absXYZDraw.reset();
+            }
         }
+
     }
 
     var mSocket;
@@ -2463,24 +2478,12 @@ var QRCode;
             alert(data);
         });
 
-
-//        for(var i = 0; i < 1000;i++){
-//            mSocket.emit(MSG_TYPE.M_SHAKE_REQ, {shakeArg: {
-//                deltaX: 6 + i*2 ,
-//                deltaY: 8,
-//                deltaZ: 10
-//            }});
-//        }
-
         shakeStart();
     }
-
-
 
     function emitShake(obj){
         mSocket.emit(MSG_TYPE.M_SHAKE_REQ, {shakeArg: obj});
     }
-
 
     var myShakeEvent;
     function shakeStart(){
@@ -2492,23 +2495,15 @@ var QRCode;
             emitShake({
                 deltaX: e.deltaX,
                 deltaY: e.deltaY,
-                deltaZ: e.deltaZ
+                deltaZ: e.deltaZ,
+                absXYZ: e.absXYZ
             });
 
         }, false);
         myShakeEvent = new window.Shake();
         myShakeEvent.start();
 
-//        for(var i = 0; i < 1000;i++){
-//            mSocket.emit(MSG_TYPE.M_SHAKE_REQ, {shakeArg: {
-//                deltaX: 6 + i*2 ,
-//                deltaY: 8,
-//                deltaZ: 10
-//            }});
-//        }
-
     }
-
 
     function generateQRCode() {
         var urlDir = window.location.href;
@@ -2523,7 +2518,7 @@ var QRCode;
             correctLevel:QRCode.CorrectLevel.H
         }
 
-        for (var i = 0, mUrl = ''; i < 3; i++) {
+        for (var i = 0, mUrl = '' ,len = $('.mQrCode').length; i < len; i++) {
             mUrl = '';
             mUrl += urlDir + '?id=' + i;
             qrCodeConfig.text = mUrl;
@@ -2540,5 +2535,18 @@ var QRCode;
             document.getElementById('consolePad').innerHTML = content;
         }
     }
-})();
+
+    $('.ctrBtn').on('click',function(e){
+        swc = swc ? false: true;
+
+        if(swc){
+            $(this).text('开始');
+        }
+        else{
+            $(this).text('暂停');
+        }
+
+    });
+
+})(Zepto);
 ;

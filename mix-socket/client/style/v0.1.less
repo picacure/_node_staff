@@ -1,9 +1,29 @@
 
 .mQrCode{
+    position: fixed;
+    right: 10px;
+    top: 10px;
     display: inline-block;
     width: 150px;
     height: 150px;
     margin-left: 10px;
+}
+
+.tips{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 200px;
+    opacity: 0.4;
+    #consolePad{
+        font-size: 8px;
+        margin: 20px;
+    }
+
+    #axisPad{
+        font-size: 8px;
+        margin: 20px;
+    }
 }
 
 .mbox{
@@ -30,9 +50,20 @@
     }
 }
 
+.ctrBtn{
+    position: fixed;
+    right: 20px;
+    bottom: 300px;
+    border: 1px solid;
+    width: 70px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+}
 
 //输出canvas
-#xBoard, #yBoard, #zBoard{
+#xBoard, #yBoard, #zBoard, #absXYZ{
+    font-size: 10px;
     height: 200px;
-    width: 100%;
+    width: 80%;
 }

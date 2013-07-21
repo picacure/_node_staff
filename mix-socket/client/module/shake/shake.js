@@ -118,11 +118,17 @@
             this.event.deltaX = current.x;
             this.event.deltaY = current.y;
             this.event.deltaZ = current.z;
+            this.event.absXYZ = getAbsolute(current.x,current.y,current.z);
             this.event.shakeTimes = this.shakeTimes;
             window.dispatchEvent(this.event);
             this.shakeTimes = 0;
             this.lastTime = new Date();
         }
+    };
+
+    //拟合算子.
+    function getAbsolute(x,y,z){
+        return (x + y + z);
     };
 
     //event handler
