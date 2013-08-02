@@ -1,12 +1,12 @@
 (function (window) {
     var $out = "";
-    $out += '<div class="mbox">\r\n    <div class="txt">龙舟比赛</div>\r\n    <div class="mID"><img src="./images/wait.gif" alt=""></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n</div>\r\n';
+    $out += '<div class="mbox">\r\n    <div class="txt">****</div>\r\n    <div class="mID"><img src="./images/wait.gif" alt=""></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n</div>\r\n';
 
     window.TMPL = {};
     window.TMPL.mbody = $out;
 })(window);
 
-/* Zepto v1.0-1-ga3cab6c - polyfill zepto detect event ajax form fx - zeptojs.com/license */
+;/* Zepto v1.0-1-ga3cab6c - polyfill zepto detect event ajax form fx - zeptojs.com/license */
 
 
 ;(function(undefined){
@@ -1572,7 +1572,7 @@ window.Zepto = Zepto
   testEl = null
 })(Zepto);
 
-(function(window){
+;(function(window){
 
     if(!String.prototype.trim) {
         String.prototype.trim = function () {
@@ -1598,7 +1598,7 @@ window.Zepto = Zepto
         return false;
     }
 })(this);
-/*
+;/*
  *
  * Find more about this plugin by visiting
  * 3ks to http://alxgbsn.co.uk/
@@ -1737,7 +1737,7 @@ window.Zepto = Zepto
 
 });
 
-/*!
+;/*!
  * EventEmitter v4.1.1 - git.io/ee
  * Oliver Caldwell
  * MIT license
@@ -2117,7 +2117,7 @@ window.Zepto = Zepto
         exports.EventEmitter = EventEmitter;
     }
 }(this));
-/*! Socket.IO.js build:0.9.16, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+;/*! Socket.IO.js build:0.9.16, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 var io = ('undefined' === typeof module ? {} : module.exports);
 (function() {
@@ -5990,76 +5990,7 @@ if (typeof define === "function" && define.amd) {
   define([], function () { return io; });
 }
 })();
-//画图组件. by jiangC
-(function(){
-    var draw = function(domId,options){
-        var myCanvas = document.createElement('canvas'),
-            wrapper = document.getElementById(domId)
-            ;
-
-        myCanvas.style.width = getComputedStyle(wrapper).width;
-        myCanvas.style.height = getComputedStyle(wrapper).height;
-
-        this.canvas = myCanvas;
-        this.canvas.width = parseInt(myCanvas.style.width);
-        this.canvas.height = parseInt(myCanvas.style.height);
-
-        this.context = this.canvas.getContext('2d');
-
-        this.line = [
-            {
-                x:0,
-                y:0
-            }
-        ]
-
-        this.color = options.color || 'red';
-
-        wrapper.appendChild(myCanvas);
-    };
-
-    draw.prototype.drawLine = function(xV,yV){
-        var len = this.line.length - 1;
-
-        //解决clearRect失效的问题 http://stackoverflow.com/questions/9743027/clearrect-not-working
-        this.context.beginPath();
-
-        //old point.
-        this.context.moveTo(this.line[len].x, this.line[len].y);
-
-        //new point.
-        this.context.lineTo(xV, yV);
-        this.context.lineWidth = 1;
-        this.context.strokeStyle = this.color;
-        this.context.stroke();
-
-        this.line.push({
-            x:xV,
-            y:yV
-        });
-    };
-
-    draw.prototype.size = function(){
-        return {
-            width: this.canvas.width,
-            height: this.canvas.height
-        }
-    };
-
-    draw.prototype.reset = function(){
-
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.line = [
-            {
-                x:0,
-                y:0
-            }
-        ]
-    }
-
-    window.Draw = draw;
-})();
-/**
+;/**
  * @fileoverview
  * - Using the 'QRCode for Javascript library'
  * - Fixed dataset of 'QRCode for Javascript library' for support full-spec.
@@ -6557,7 +6488,7 @@ var QRCode;
 	 */
 	QRCode.CorrectLevel = QRErrorCorrectLevel;
 })();
-/*
+;/*
  * JavaScript Templates 2.1.0
  * https://github.com/blueimp/JavaScript-Templates
  *
@@ -6634,26 +6565,30 @@ var QRCode;
         $.tmpl = tmpl;
     }
 }(this));
-(function ($,window) {
+;(function ($,window) {
 
-    var MSG_TYPE = {
+    //框架基本消息.
+    var FRM_MSG = {
         M_CONNECT_REQ:'M_CONNECT_REQ',
         M_CONNECT_RES:'M_CONNECT_RES',
+
         M_TOKEN_INVALID:'M_TOKEN_INVALID',
         M_TOKEN_OK:'M_TOKEN_OK',
+
+        PC_CONNECT_REQ:'PC_CONNECT_REQ',
+        PC_M_CONNECT_RES:'PC_M_CONNECT_RES'
+    };
+
+    var CUSTOMER_MSG = {
         M_SHAKE_INIT:'M_SHAKE_INIT',     //PC通知M端开始摇晃.
         M_SHAKE_REQ:'M_SHAKE_REQ',
         M_SHAKE_RES:'M_SHAKE_RES',
-        M_REPLAY:'M_REPLAY',
 
-        PC_CONNECT_REQ:'PC_CONNECT_REQ',
-        PC_M_CONNECT_RES:'PC_M_CONNECT_RES',
-        PC_M_ALL_CONNECT_RES:'PC_M_ALL_CONNECT_RES',         //所有 M端接入.
-        PC_M_SHAKE_START_TIP:'PC_M_SHAKE_START_TIP',   //通知所有M端开始摇晃.
+        PC_SHAKE_RES:'PC_SHAKE_RES'
+    };
 
-        PC_SHAKE_RES:'PC_SHAKE_RES',
-
-        PC_REPLAY:'PC_REPLAY'  //重玩
+    var GAME_MSG = {
+        GAME_OVER: 'GAME_OVER'
     };
 
     var CONST_VAR = {
@@ -6665,192 +6600,20 @@ var QRCode;
         ;
 
 
-    var nextFrame = (function() {
-        return window.requestAnimationFrame
-            || window.webkitRequestAnimationFrame
-            || window.mozRequestAnimationFrame
-            || window.oRequestAnimationFrame
-            || window.msRequestAnimationFrame
-            || function(callback) { return setTimeout(callback, 17); }
-    })();
-
-
-    var myEvent = new EventEmitter(),
-        whoWin = ''
+    var myEvent = new EventEmitter()
         ;
 
-    myEvent.addListener('Game-over', function(ID){
-        for(var i = 0,len = pc.boatArr.length,boatID; i < len; i++){
-            boatID = pc.boatArr[i].getID();
-            if(ID == boatID){
-                pc.boatArr.remove(i);
+    myEvent.addListener(GAME_MSG.GAME_OVER, function(ID){
 
-                //赢家.
-                if(whoWin == ''){
-                    whoWin = boatID;
-                }
-
-                break;
-            }
-        }
-
-        //都到达终点刷新页面.
-        if(pc.boatArr.length == 0){
-            pc.getSocket().emit(MSG_TYPE.PC_REPLAY, { winID: whoWin });
-
-            setTimeout(function(){
-                window.location.reload();
-            },3000);
-        }
     });
 
-    //河流是否到尽头，减少渲染.
-    var isRiverOver = false;
-    var BOAT = function(id){
-        if(id.toString().toLowerCase().indexOf('boatas') > -1){
-            //静态图片.
-            this.$boatS = $('.boatAS');
-
-            this.ID = 'boatAS';
-
-            //动态船.
-            this.$boat = $('.boatA');
-        }
-        else if(id.toString().toLowerCase().indexOf('boatbs') > -1){
-            //静态图片.
-            this.$boatS = $('.boatBS');
-
-            this.ID = 'boatBS';
-
-            //动态船.
-            this.$boat = $('.boatB');
-        }
-        else{
-            throw Error('Boat init ,wrong ID');
-        }
-
-        //隐藏二维码.
-        this.$boatS.find('.mQrCode').hide();
-
-
-
-        //动力系数.
-        this.power = 2;
-
-        //河水.
-        this.$river = $('.river');
-
-        this.riverTrans = -1370;
-
-        this.dist = 0;
-
-        this.transWrapper = 2350;
-    };
-    BOAT.prototype = {
-        constructor: BOAT,
-        getID: function(){
-            return this.ID;
-        },
-        nextFrame: function() {
-            return window.requestAnimationFrame
-                || window.webkitRequestAnimationFrame
-                || window.mozRequestAnimationFrame
-                || window.oRequestAnimationFrame
-                || window.msRequestAnimationFrame
-                || function(callback) { return setTimeout(callback, 17); }
-        },
-        animate: function(){
-
-            var _self = this
-                ;
-
-            _self.$boatS.hide();
-            _self.$boat.show();
-            _self.rock();
-        },
-        rock: function(){
-            var _self = this
-                ;
-
-
-
-            var rockFrame = function(){
-                _self.power -= 0.01;
-
-                if(_self.power > 0){
-                    //get translatex.
-                    if(_self.$river.css('webkitTransform')){
-                        _self.riverTrans = +_self.$river.css('webkitTransform').match(/-\d*\.*\d*/g);
-                        _self.riverTrans += (_self.power*0.65);
-                    }
-                    _self.transWrapper -= _self.power;
-
-                    //船移动.
-                    if(_self.transWrapper > 0){
-                        _self.$boat.css({
-                            '-webkit-transform': 'translatex(' + _self.transWrapper + 'px)'
-                        });
-                    }
-                    else{
-                        _self.$boat.hide();
-                        _self.$boatS.css({
-                            '-webkit-transform': 'translatex(0px)'
-                        }).show();
-
-                        //二维码隐藏.
-                        $('.mQrCode').hide();
-                        //到达终点,发送消息
-                        myEvent.emitEvent('Game-over',[_self.ID]);
-                        return;
-                    }
-
-
-                    //河流移动.
-                    if(_self.riverTrans < 0){
-                        _self.$river.css({
-                            '-webkit-transform': 'translatex(' + _self.riverTrans + 'px)'
-                        });
-                    }
-                    else{
-                        //河流到尽头.
-                        isRiverOver = true;
-                    }
-
-                    //动画帧数.
-                    nextFrame(rockFrame);
-                }
-                else{
-                    _self.power = 0;
-
-                    nextFrame(rockFrame);
-                }
-            }
-
-            rockFrame();
-        },
-        pump: function(pumpArg){
-
-            //摇动加油.
-            var _self = this;
-            _self.power += 1;
-
-            //上线.
-            if(_self.power > 20){
-                _self.power = 20;
-            }
-
-        },
-        reset: function(){
-
-        }
-    };
+    //Todo:页面上的运动对象，如船，Canvas.
 
 
     var PC = function(){
 
         //生成二维码.
         this.generateQRCode();
-
         this.initSocket();
         this.listen();
 
@@ -6875,61 +6638,22 @@ var QRCode;
             }
 
             //连接，确定一个server socket.
-            _self.socket.emit(MSG_TYPE.PC_CONNECT_REQ, { Token: tokenArr });
+            _self.socket.emit(FRM_MSG.PC_CONNECT_REQ, { Token: tokenArr });
 
             //新的终端接入.
-            _self.socket.on(MSG_TYPE.PC_M_CONNECT_RES, function (data) {
-                var boat = new BOAT(data.ID);
-
-                _self.boatArr.push(boat);
-                //隐藏二维码，显示ID.
+            _self.socket.on(FRM_MSG.PC_M_CONNECT_RES, function (data) {
+                alert(data);
             });
 
-            //所有终端接入.
-            _self.socket.on(MSG_TYPE.PC_M_ALL_CONNECT_RES, function (data) {
-                this.emit(MSG_TYPE.PC_M_SHAKE_START_TIP, {});
-
-                var countTick = 3,
-                    countInter,
-                    $djs = $('.djs')
-                    ;
-
-                countInter = setInterval(function(){
-                    if(countTick == 0){
-                        $djs.text('GO').animate({ opacity: 0 },2000, 'ease-out');
-                        clearInterval(countInter);
-
-                        //开始动画.
-                        for(var i = 0,len = _self.boatArr.length; i < len; i++){
-                            _self.boatArr[i].animate();
-                        }
-                    }
-                    else{
-                        $djs.text(countTick--);
-                    }
-                },1000);
-
-            });
-
-            //晃动数据.
-            _self.socket.on(MSG_TYPE.PC_SHAKE_RES, function(data){
-                //分配动画数据.
-                //$('.spray').text(data.shakeArg.ID + Date.now());
-
-                for(var i = 0,len = _self.boatArr.length; i < len; i++){
-                    if(_self.boatArr[i].getID() == data.shakeArg.ID){
-
-                        //获得一次动力.
-                        _self.boatArr[i].pump(data.shakeArg);
-
-                    }
-                }
+            //摇晃数据.
+            _self.socket.on(CUSTOMER_MSG.PC_SHAKE_RES, function (data) {
+                alert(data.shakeArg.ID);
             });
         },
         getSocket: function(){
             return this.socket;
         },
-        generateQRCode: function(){
+        generateQRCode: function(el){
             var urlDir = window.location.href;
             var $mQrCode = $('.mQrCode');
 
@@ -6942,20 +6666,37 @@ var QRCode;
                 correctLevel:QRCode.CorrectLevel.H
             }
 
-            for (var i = 0, mUrl = '' , len = $mQrCode.length , tToken; i < len; i++) {
-                mUrl = '';
+            //全部渲染.
+            var mUrl = '',
+                tToken
+                ;
+            if(!el){
+                for (var i = 0, len = $mQrCode.length; i < len; i++) {
+                    mUrl = '';
+                    tToken = Date.now();
+
+                    //生成className  ID  、token
+                    mUrl += urlDir + '?id=' + $mQrCode.eq(i).attr('data-for') + '&token=' + tToken;
+
+                    //记录Token串.
+                    $mQrCode.eq(i).attr('data-token',tToken);
+
+                    qrCodeConfig.text = mUrl;
+                    new QRCode($mQrCode[i], qrCodeConfig);
+                }
+            }
+            else{
                 tToken = Date.now();
 
                 //生成className  ID  、token
                 mUrl += urlDir + '?id=' + $mQrCode.eq(i).parent()[0].className + '&token=' + tToken;
 
                 //记录Token串.
-                $mQrCode.eq(i).attr('data-token',tToken);
+                $(el).attr('data-token',tToken);
 
                 qrCodeConfig.text = mUrl;
-                new QRCode($mQrCode[i], qrCodeConfig);
+                new QRCode(el, qrCodeConfig);
             }
-
         }
     };
 
@@ -6980,52 +6721,35 @@ var QRCode;
                 ;
 
             //连接，接入.
-            this.socket.emit(MSG_TYPE.M_CONNECT_REQ, {
+            this.socket.emit(FRM_MSG.M_CONNECT_REQ, {
                 ID: _self.ID,
                 UA: navigator.userAgent,
                 Token: _self.Token
             });
 
             //Token 失效.
-            this.socket.on(MSG_TYPE.M_TOKEN_INVALID, function (data) {
+            this.socket.on(FRM_MSG.M_TOKEN_INVALID, function (data) {
                 $('.mID').html('Token 失效<br>请重新扫描二维码');
             });
 
             //正常接入.
-            this.socket.on(MSG_TYPE.M_TOKEN_OK, function (data) {
+            this.socket.on(FRM_MSG.M_TOKEN_OK, function (data) {
                 $('.mID').html('成功接入');
-            });
 
-            //所有终端都已接入.
-            this.socket.on(MSG_TYPE.M_SHAKE_INIT, function (data) {
-
-                $('.mID').html('准备摇晃手机');
                 _self.startShake();
             });
 
+            //所有终端都已接入.
+            this.socket.on(CUSTOMER_MSG.M_SHAKE_INIT, function (data) {
 
-            //重玩.
-            this.socket.on(MSG_TYPE.M_REPLAY, function (data) {
-                if(data.winID == _self.ID) {
-                    $('.mID').html("恭喜，你赢啦！！！！<br>扫描二维码重玩");
-                }
-                else{
-                    $('.mID').html("矮油，输咯～～～～<br>扫描二维码重玩");
-                }
             });
+
         },
         startShake: function(){
-            var _self = this,
-                $console = $('.console')
+            var _self = this
                 ;
 
-
             window.addEventListener('shake', function(e){
-
-                //M端显示三个轴的信息.
-//                $console.eq(0).text(e.deltaX);
-//                $console.eq(1).text(e.deltaY);
-//                $console.eq(2).text(e.deltaZ);
 
                 _self.emitShake({
                     ID: _self.ID,
@@ -7040,7 +6764,7 @@ var QRCode;
             _self.shake.start();
         },
         emitShake: function(obj){
-            this.socket.emit(MSG_TYPE.M_SHAKE_REQ, {shakeArg: obj});
+            this.socket.emit(CUSTOMER_MSG.M_SHAKE_REQ, {shakeArg: obj});
         }
     };
 
@@ -7069,3 +6793,4 @@ var QRCode;
 
 
 })(Zepto,window);
+;

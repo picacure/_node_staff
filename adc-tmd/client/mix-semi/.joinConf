@@ -1,3 +1,5 @@
+template/v0.1/final.js
+
 module/zepto/zepto.js
 module/util/util.js
 
@@ -5,7 +7,7 @@ module/shake/shake.js
 module/eventEmitter/eventEmitter.js
 module/socket.io/socket.io.js
 module/qr-code/qrcode.js
-
+module/tmpl/tmpl.js
 
 
 js/development/v0.1.js
