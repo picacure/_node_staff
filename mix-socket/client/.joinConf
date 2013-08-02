@@ -1,5 +1,7 @@
 template/v0.1/final.js
 
+
+module/shake-alg/
 module/zepto/
 module/util/
 

@@ -33,6 +33,7 @@
 
     var pcSocket;
     var xDraw,
+        xFitDraw,
         yDraw,
         zDraw,
         absXYZDraw,
@@ -52,10 +53,20 @@
             txt_notification('','新机器接入',data.MobileUA.UA || '');
         });
 
-        xDraw =  new Draw('xBoard',{ color : 'red'});
-        yDraw =  new Draw('yBoard',{ color : 'green'});
-        zDraw =  new Draw('zBoard',{ color : 'blue'});
-        absXYZDraw =  new Draw('absXYZ',{ color : 'red'});
+        //X轴线
+        xDraw =  new Draw('xBoard',{ color : 'red', height: 200, width: '100%' });
+
+        //x轴线滤波.
+        xFitDraw = new Draw('xFitBoard',{ color : 'red', height: 200, width: '100%' });
+
+        //Y轴线
+        yDraw =  new Draw('yBoard',{ color : 'green', height: 200, width: '100%' });
+
+        //Z轴线
+        zDraw =  new Draw('zBoard',{ color : 'blue', height: 200, width: '100%' });
+
+        //三轴加速度差分绝对值之和
+        absXYZDraw =  new Draw('absXYZ',{ color : 'red', height: 200, width: '100%' });
         hAxis = 0;
 
         //晃动数据.
@@ -66,6 +77,7 @@
 
     var step = 3;
     function drawLine(data){
+        //开始、暂停.
         if(!swc){
             document.getElementById('axisPad').innerHTML = 'X:' + data.Shake.shakeArg.deltaX +
                 '<br>Y:' + data.Shake.shakeArg.deltaY +
@@ -74,6 +86,7 @@
 
 
             xDraw.drawLine(hAxis,data.Shake.shakeArg.deltaX + vBase);
+            xFitDraw.drawLine(hAxis,Fit.fitLine(data.Shake.shakeArg.deltaX) + vBase);
             yDraw.drawLine(hAxis,data.Shake.shakeArg.deltaY + vBase);
             zDraw.drawLine(hAxis,data.Shake.shakeArg.deltaZ + vBase);
             absXYZDraw.drawLine(hAxis,data.Shake.shakeArg.absXYZ + vBase);
@@ -82,6 +95,7 @@
             if(hAxis > xDraw.size().width){
                 hAxis = (hAxis % xDraw.size().width);
                 xDraw.reset();
+                xFitDraw.reset();
                 yDraw.reset();
                 zDraw.reset();
                 absXYZDraw.reset();
@@ -164,6 +178,8 @@
         }
     }
 
+
+    //暂停.
     $('.ctrBtn').on('click',function(e){
         swc = swc ? false: true;
 
@@ -174,6 +190,18 @@
             $(this).text('暂停');
         }
 
+    });
+
+    $('figure').on('click',function(e){
+        var $canvas = $(this).siblings('canvas');
+        if($canvas.css('display').indexOf('none') > -1){
+            $(this).children('.boardCtl').text('-');
+            $canvas.show();
+        }
+        else{
+            $(this).children('.boardCtl').text('+');
+            $canvas.hide();
+        }
     });
 
 })(Zepto);

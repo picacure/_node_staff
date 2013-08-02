@@ -5,8 +5,8 @@
             wrapper = document.getElementById(domId)
             ;
 
-        myCanvas.style.width = getComputedStyle(wrapper).width;
-        myCanvas.style.height = getComputedStyle(wrapper).height;
+        myCanvas.style.width = window.getComputedStyle(wrapper).width || '700px' ;
+        myCanvas.style.height = (options.height || 200) + 'px';
 
         this.canvas = myCanvas;
         this.canvas.width = parseInt(myCanvas.style.width);

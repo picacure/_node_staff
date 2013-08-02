@@ -52,11 +52,15 @@
   text-align: center;
   line-height: 30px;
 }
-#xBoard,
-#yBoard,
-#zBoard,
-#absXYZ {
+.board {
   font-size: 10px;
-  height: 200px;
   width: 80%;
+}
+.board figure {
+  height: 30px;
+  line-height: 30px;
+}
+.board figure .boardCtl {
+  color: red;
+  font-size: 14px;
 }
