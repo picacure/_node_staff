@@ -1,0 +1,76 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "微软雅黑";
+}
+
+#wrapper {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background: #CCC;
+
+    //手机显示样式.
+    .mbox{
+        text-align: center;
+        font-size: 24px;
+
+        .txt{
+            height: 50px;
+            line-height: 50px;
+        }
+
+        .mID{
+            height: 200px;
+            font-size: 30px;
+            font-weight: bolder;
+            color: red;
+        }
+
+        .console{
+            display: none;
+            margin-top: 100px;
+            text-align: center;
+            height: 40px;
+            width: 300px;
+            background-color: #AEBDCC;
+        }
+    }
+}
+
+#myCanvas{
+    width: 500px;
+    height: 500px;
+    border: red 1px solid;
+}
+
+#output{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background: #CCC;
+    text-align: center;
+    .board{
+        display: inline-block;
+        position: relative;
+        border: 10px solid white;
+        margin-top: 200px;
+
+
+        .mQrCode{
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            border: 5px solid yellowgreen;
+        }
+    }
+
+    .board + .board{
+        margin-left: 50px;
+    }
+
+}
