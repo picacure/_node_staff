@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html, charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <link type='text/css' rel="stylesheet/less" href="style/v0.1.less">
+    <script src="http://a.tbcdn.cn/mw/base/libs/less/1.3.0/less.js"></script>
+    <script src="./js/production/v0.1.js"></script>
+</head>
+<body>
+<div id="wrapper">
+    <div id="output">
+        <canvas id="myCanvas" width="500px" height="500px"></canvas>
+    </div>
+</div>
+<script>
+
+    var CurveOneX = 186,
+            CurveOneY = 186,
+            CurveStartX = 171,
+            CurveStartY = 237,
+            lineWidth = 6
+            ;
+
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = "#333";
+    ctx.beginPath();
+    ctx.moveTo(CurveStartX, CurveStartY);
+    ctx.bezierCurveTo(CurveOneX, CurveOneY, 191, 135, 252, 143);
+    ctx.stroke();
+
+
+    var grow = setInterval(function(){
+
+
+        if(CurveOneX > 133){
+            --CurveOneX;
+            CurveOneY = CurveOne(CurveOneX);
+        }
+
+        --CurveStartX;
+        if(CurveStartX > 14){
+            CurveStartY = CurveStart(CurveStartX);
+
+            lineWidth += 0.13;
+        }
+        else{
+            CurveStartX = 171;
+            CurveStartY = 237;
+
+            CurveOneX = 186,
+                    CurveOneY = 186,
+
+                    lineWidth = 6;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = "#333";
+        ctx.beginPath();
+        ctx.moveTo(CurveStartX, CurveStartY);
+        ctx.bezierCurveTo(CurveOneX, CurveOneY, 191, 135, 252, 143);
+        ctx.stroke();
+
+    }, 100);
+
+    function CurveOne(x){
+        return (59/53) * x + (186-186 * 59 /53);
+    }
+
+    function CurveStart(x){
+        return (122/157) * x + (237 - 171 * 122/157);
+    }
+</script>
+</body>
+</html>
