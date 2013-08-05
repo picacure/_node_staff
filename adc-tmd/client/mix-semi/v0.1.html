@@ -15,9 +15,13 @@
 <body>
 <div id="wrapper">
     <div id="output">
+        <div class="tip"></div>
         <div class="board">
-            <canvas id="cOne" width="500px" height="500px">
+            <canvas id="cOne" width="700px" height="500px">
             </canvas>
+            <div class="lao">
+                <img src="./images/2013-08-04-01.jpg">
+            </div>
         </div>
     </div>
 </div>
@@ -30,57 +34,197 @@
         lineWidth = 6
         ;
 
-    var canvas = document.getElementById("cOne");
-    var ctx = canvas.getContext("2d");
-    ctx.lineWidth = 6;
-    ctx.strokeStyle = "#333";
-    ctx.beginPath();
-    ctx.moveTo(CurveStartX, CurveStartY);
-    ctx.bezierCurveTo(CurveOneX, CurveOneY, 191, 135, 252, 143);
-    ctx.stroke();
+//    var canvas = document.getElementById("cOne");
+//    var ctx = canvas.getContext("2d");
+//    ctx.lineWidth = 6;
+//    ctx.strokeStyle = "#333";
+//    ctx.beginPath();
+//    ctx.moveTo(CurveStartX, CurveStartY);
+//    ctx.bezierCurveTo(CurveOneX, CurveOneY, 191, 135, 252, 143);
+//    ctx.stroke();
 
 
-    var grow = setInterval(function(){
+//    var grow = setInterval(function(){
+//
+//
+//        if(CurveOneX > 133){
+//            --CurveOneX;
+//            CurveOneY = CurveOne(CurveOneX);
+//        }
+//
+//        --CurveStartX;
+//        if(CurveStartX > 14){
+//            CurveStartY = CurveStart(CurveStartX);
+//
+//            lineWidth += 0.13;
+//        }
+//        else{
+//            CurveStartX = 171;
+//            CurveStartY = 237;
+//
+//            CurveOneX = 186,
+//                    CurveOneY = 186,
+//
+//                    lineWidth = 6;
+//        }
+//
+//        ctx.clearRect(0, 0, canvas.width, canvas.height);
+//        ctx.lineWidth = lineWidth;
+//        ctx.strokeStyle = "#333";
+//        ctx.beginPath();
+//        ctx.moveTo(CurveStartX, CurveStartY);
+//        ctx.bezierCurveTo(CurveOneX, CurveOneY, 191, 135, 252, 143);
+//        ctx.stroke();
+//
+//    }, 100);
+//
+//    function CurveOne(x){
+//        return (59/53) * x + (186-186 * 59 /53);
+//    }
+//
+//    function CurveStart(x){
+//        return (122/157) * x + (237 - 171 * 122/157);
+//    }
 
+    var Line_Params = {
 
-        if(CurveOneX > 133){
-            --CurveOneX;
-            CurveOneY = CurveOne(CurveOneX);
-        }
+        //贝塞尔曲线.
+        CurveOneX : 186,
+        CurveOneY : 186,
 
-        --CurveStartX;
-        if(CurveStartX > 14){
-            CurveStartY = CurveStart(CurveStartX);
+        CurveTwoX: 191,
+        CurveTwoY: 135,
+        CurveThreeX: 252,
+        CurveThreeY: 143,
 
-            lineWidth += 0.13;
-        }
-        else{
-            CurveStartX = 171;
-            CurveStartY = 237;
+        //初始位置
+        CurveStartX : 171,
+        CurveStartY : 237,
 
-            CurveOneX = 186,
-                    CurveOneY = 186,
+        //结束位置(一个坐标即可).
+        CurveOneXEnd : 133,
+        CurveXEnd : 14,
 
-                    lineWidth = 6;
-        }
+        BaseLineWidth : 6,
+        StrokeStyle: '#333'
+    };
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = "#333";
-        ctx.beginPath();
-        ctx.moveTo(CurveStartX, CurveStartY);
-        ctx.bezierCurveTo(CurveOneX, CurveOneY, 191, 135, 252, 143);
-        ctx.stroke();
+    var Init_Params = {
+        CurveStartX: 171,
+        CurveStartY : 237,
 
-    }, 100);
+        CurveOneX : 186,
+        CurveOneY : 186,
 
-    function CurveOne(x){
-        return (59/53) * x + (186-186 * 59 /53);
+        LineGrowStep: 0.13,
+
+        BaseLineWidth : 10
+    };
+
+    function Curve(){
+        this.canvas = document.getElementById("cOne");
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.lineWidth = Line_Params.BaseLineWidth;
+        this.ctx.strokeStyle = Line_Params.StrokeStyle;
+        this.ctx.beginPath();
+        this.ctx.moveTo(CurveStartX, CurveStartY);
+        this.ctx.bezierCurveTo(CurveOneX, CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
+        this.ctx.stroke();
     }
 
-    function CurveStart(x){
-        return (122/157) * x + (237 - 171 * 122/157);
+    Curve.prototype = {
+        constructor: Curve,
+        grow:function(auto){
+            var _self = this;
+
+            if(auto){
+                _self.growInterval = setInterval(function(){
+
+                    if(Line_Params.CurveOneX > Line_Params.CurveOneXEnd){
+                        --Line_Params.CurveOneX;
+                        Line_Params.CurveOneY = _self.CurveOne(Line_Params.CurveOneX);
+                    }
+
+                    --Line_Params.CurveStartX;
+                    if(Line_Params.CurveStartX > Line_Params.CurveXEnd){
+                        Line_Params.CurveStartY = _self.CurveStart(Line_Params.CurveStartX);
+
+                        Line_Params.BaseLineWidth += Init_Params.LineGrowStep;
+                    }
+                    else{
+                        Line_Params.CurveStartX = Init_Params.CurveStartX;
+                        Line_Params.CurveStartY = Init_Params.CurveStartY;
+
+                        Line_Params.CurveOneX = Init_Params.CurveOneX,
+                        Line_Params.CurveOneY = Init_Params.CurveOneY,
+                        Line_Params.BaseLineWidth = Init_Params.BaseLineWidth;
+                    }
+
+                    _self.ctx.clearRect(0, 0, _self.canvas.width, _self.canvas.height);
+                    _self.ctx.lineWidth = Line_Params.BaseLineWidth;
+                    _self.ctx.strokeStyle = "#333";
+                    _self.ctx.beginPath();
+                    _self.ctx.moveTo(Line_Params.CurveStartX, Line_Params.CurveStartY);
+                    _self.ctx.bezierCurveTo(Line_Params.CurveOneX, Line_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
+                    _self.ctx.stroke();
+
+                }, 100);
+            }
+            else{
+                if(Line_Params.CurveOneX > Line_Params.CurveOneXEnd){
+                    --Line_Params.CurveOneX;
+                    Line_Params.CurveOneY = _self.CurveOne(Line_Params.CurveOneX);
+                }
+
+                --Line_Params.CurveStartX;
+                if(Line_Params.CurveStartX > Line_Params.CurveXEnd){
+                    Line_Params.CurveStartY = _self.CurveStart(Line_Params.CurveStartX);
+
+                    Line_Params.BaseLineWidth += Init_Params.LineGrowStep;
+                }
+                else{
+                    Line_Params.CurveStartX = Init_Params.CurveStartX;
+                    Line_Params.CurveStartY = Init_Params.CurveStartY;
+
+                    Line_Params.CurveOneX = Init_Params.CurveOneX,
+                    Line_Params.CurveOneY = Init_Params.CurveOneY,
+                    Line_Params.BaseLineWidth = Init_Params.BaseLineWidth;
+                }
+
+                _self.ctx.clearRect(0, 0, _self.canvas.width, _self.canvas.height);
+                _self.ctx.lineWidth = Line_Params.BaseLineWidth;
+                _self.ctx.strokeStyle = "#333";
+                _self.ctx.beginPath();
+                _self.ctx.moveTo(Line_Params.CurveStartX, Line_Params.CurveStartY);
+                _self.ctx.bezierCurveTo(Line_Params.CurveOneX, Line_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
+                _self.ctx.stroke();
+            }
+
+        },
+        reset: function(){
+            Line_Params.CurveStartX = Init_Params.CurveStartX;
+            Line_Params.CurveStartY = Init_Params.CurveStartY;
+
+            Line_Params.CurveOneX = Init_Params.CurveOneX,
+            Line_Params.CurveOneY = Init_Params.CurveOneY,
+            Line_Params.BaseLineWidth = Init_Params.BaseLineWidth;
+
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.lineWidth = Line_Params.BaseLineWidth;
+            this.ctx.strokeStyle = Line_Params.StrokeStyle;
+            this.ctx.beginPath();
+            this.ctx.moveTo(CurveStartX, CurveStartY);
+            this.ctx.bezierCurveTo(CurveOneX, CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
+            this.ctx.stroke();
+        },
+        CurveOne: function(x){
+            return (59/53) * x + (186-186 * 59 /53);
+        },
+        CurveStart: function(x){
+            return (122/157) * x + (237 - 171 * 122/157);
+        }
     }
+
 </script>
 
 <script src="./js/production/v0.1.js"></script>

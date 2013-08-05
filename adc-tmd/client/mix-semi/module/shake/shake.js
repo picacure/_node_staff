@@ -105,15 +105,23 @@
 
             this.shakeTimes++;
 
-            if(timeDifference > 800 && this.shakeTimes > 5){
-                this.event.deltaX = current.x;
-                this.event.deltaY = current.y;
-                this.event.deltaZ = current.z;
-                this.event.shakeTimes = this.shakeTimes;
-                window.dispatchEvent(this.event);
-                this.shakeTimes = 0;
-                this.lastTime = new Date();
-            }
+//            if(timeDifference > 100 && this.shakeTimes > 1){
+//                this.event.deltaX = current.x;
+//                this.event.deltaY = current.y;
+//                this.event.deltaZ = current.z;
+//                this.event.shakeTimes = this.shakeTimes;
+//                window.dispatchEvent(this.event);
+//                this.shakeTimes = 0;
+//                this.lastTime = new Date();
+//            }
+
+            this.event.deltaX = current.x;
+            this.event.deltaY = current.y;
+            this.event.deltaZ = current.z;
+            this.event.shakeTimes = this.shakeTimes;
+            window.dispatchEvent(this.event);
+            this.shakeTimes = 0;
+            this.lastTime = new Date();
 
 //            this.event.deltaX = current.x;
 //            this.event.deltaY = current.y;

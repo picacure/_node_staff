@@ -52,17 +52,49 @@ body {
     top: 0px;
     bottom: 0px;
     text-align: center;
+    background: #000;
+
+    .tip{
+        margin-top: 50px;
+        color: white;
+        font-size: 24px;
+        height: 30px;
+    }
     .board{
         display: inline-block;
         position: relative;
+        background: white;
         border: 10px solid blanchedalmond;
-        margin-top: 200px;
+        margin-top: 20px;
 
         .mQrCode{
             position: absolute;
             right: 0px;
             bottom: 0px;
             border: 5px solid yellowgreen;
+        }
+
+        .lao{
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            img{
+                width: 200px;
+                height: 200px;
+                display: inline-block;
+                &::before{
+                    display: block;
+                    font-size: 100px;
+                    position: absolute;
+                    content: '好';
+                }
+                &::after{
+                    display: block;
+                    font-size: 100px;
+                    position: absolute;
+                    content: '棒';
+                }
+            }
         }
     }
 

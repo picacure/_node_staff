@@ -1,6 +1,6 @@
 (function (window) {
     var $out = "";
-    $out += '<div class="mbox">\r\n    <div class="txt">****</div>\r\n    <div class="mID"><img src="./images/wait.gif" alt=""></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n</div>\r\n';
+    $out += '<div class="mbox">\r\n    <div class="txt">{%=o.ID%}</div>\r\n    <div class="mID"><img src="./images/wait.gif" alt=""></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n    <div class="console"></div>\r\n</div>\r\n';
 
     window.TMPL = {};
     window.TMPL.mbody = $out;
@@ -1705,15 +1705,23 @@ window.Zepto = Zepto
 
             this.shakeTimes++;
 
-            if(timeDifference > 800 && this.shakeTimes > 5){
-                this.event.deltaX = current.x;
-                this.event.deltaY = current.y;
-                this.event.deltaZ = current.z;
-                this.event.shakeTimes = this.shakeTimes;
-                window.dispatchEvent(this.event);
-                this.shakeTimes = 0;
-                this.lastTime = new Date();
-            }
+//            if(timeDifference > 100 && this.shakeTimes > 1){
+//                this.event.deltaX = current.x;
+//                this.event.deltaY = current.y;
+//                this.event.deltaZ = current.z;
+//                this.event.shakeTimes = this.shakeTimes;
+//                window.dispatchEvent(this.event);
+//                this.shakeTimes = 0;
+//                this.lastTime = new Date();
+//            }
+
+            this.event.deltaX = current.x;
+            this.event.deltaY = current.y;
+            this.event.deltaZ = current.z;
+            this.event.shakeTimes = this.shakeTimes;
+            window.dispatchEvent(this.event);
+            this.shakeTimes = 0;
+            this.lastTime = new Date();
 
 //            this.event.deltaX = current.x;
 //            this.event.deltaY = current.y;
@@ -6611,13 +6619,11 @@ var QRCode;
 
 
     var PC = function(){
-
-        //生成二维码.
-        this.generateQRCode();
         this.initSocket();
         this.listen();
 
-        this.boatArr = [];
+        this.canvas = new Curve();
+
     };
     PC.prototype = {
         constructor: PC,
@@ -6633,70 +6639,27 @@ var QRCode;
                 $mQrCode = $('.mQrCode')
                 ;
 
-            for(var i = 0, len = $mQrCode.length; i < len; i++){
-                tokenArr.push($mQrCode.eq(i).attr('data-token'));
-            }
+            //设定Token.
+            tokenArr.push('H5');
+            tokenArr.push('IOS');
 
             //连接，确定一个server socket.
             _self.socket.emit(FRM_MSG.PC_CONNECT_REQ, { Token: tokenArr });
 
             //新的终端接入.
             _self.socket.on(FRM_MSG.PC_M_CONNECT_RES, function (data) {
-                alert(data);
+                $('.tip').text(data.ID + '成功接入');
             });
 
             //摇晃数据.
             _self.socket.on(CUSTOMER_MSG.PC_SHAKE_RES, function (data) {
-                alert(data.shakeArg.ID);
+                $('.tip').text('开始摇晃吧');
+
+                _self.canvas.grow();
             });
         },
         getSocket: function(){
             return this.socket;
-        },
-        generateQRCode: function(el){
-            var urlDir = window.location.href;
-            var $mQrCode = $('.mQrCode');
-
-            var qrCodeConfig = {
-                text:"",
-                width:150,
-                height:150,
-                colorDark:"#000000",
-                colorLight:"#ffffff",
-                correctLevel:QRCode.CorrectLevel.H
-            }
-
-            //全部渲染.
-            var mUrl = '',
-                tToken
-                ;
-            if(!el){
-                for (var i = 0, len = $mQrCode.length; i < len; i++) {
-                    mUrl = '';
-                    tToken = Date.now();
-
-                    //生成className  ID  、token
-                    mUrl += urlDir + '?id=' + $mQrCode.eq(i).attr('data-for') + '&token=' + tToken;
-
-                    //记录Token串.
-                    $mQrCode.eq(i).attr('data-token',tToken);
-
-                    qrCodeConfig.text = mUrl;
-                    new QRCode($mQrCode[i], qrCodeConfig);
-                }
-            }
-            else{
-                tToken = Date.now();
-
-                //生成className  ID  、token
-                mUrl += urlDir + '?id=' + $mQrCode.eq(i).parent()[0].className + '&token=' + tToken;
-
-                //记录Token串.
-                $(el).attr('data-token',tToken);
-
-                qrCodeConfig.text = mUrl;
-                new QRCode(el, qrCodeConfig);
-            }
         }
     };
 
@@ -6704,7 +6667,7 @@ var QRCode;
 
     var MOBILE =  function(id,token){
         this.ID = id;
-        this.Token = token;
+        this.Token = token || '';
         this.initSocket();
         this.listener();
     };
@@ -6770,22 +6733,57 @@ var QRCode;
 
 
     var Route =  {
-        search: window.location.search.match(/id=(\w*)/) || '-1',   //ID
-        token: window.location.search.match(/token=(\w*)/) || '-1',    //Token
+        IOS: window.location.search.match(/ios=(\w*)/) || '-1',   //ID
+        H5: window.location.search.match(/h5=(\w*)/) || '-1',    //Token
+        UriHelper: function parseURL(url) {
+            var a =  document.createElement('a');
+            a.href = url;
+            return {
+                source: url,
+                protocol: a.protocol.replace(':',''),
+                host: a.hostname,
+                port: a.port,
+                query: a.search,
+                params: (function(){
+                    var ret = {},
+                        seg = a.search.replace(/^\?/,'').split('&'),
+                        len = seg.length, i = 0, s;
+                    for (;i<len;i++) {
+                        if (!seg[i]) { continue; }
+                        s = seg[i].split('=');
+                        ret[s[0]] = s[1];
+                    }
+                    return ret;
+                })(),
+                file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1],
+                hash: a.hash.replace('#',''),
+                path: a.pathname.replace(/^([^\/])/,'/$1'),
+                relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [,''])[1],
+                segments: a.pathname.replace(/^\//,'').split('/')
+            };
+        },
         router: function(){
 
+            var params = Object.keys(Route.UriHelper(window.location.href).params);
+
             //PC页面
-            if(Route.search == '-1'){
+            if(!params.contains('ios') && !params.contains('h5')){
                 pc = new PC();
             }
-            //Mobile 页面.
-            else{
+            //IOS.
+            else if(params.contains('ios')){
 
-                var result = tmpl(window.TMPL.mbody, { ID: Route.search[1]});
+                var result = tmpl(window.TMPL.mbody, { ID: 'IOS'});
                 $('#wrapper').html(result);
 
-                mm = new MOBILE(Route.search[1],Route.token[1]);
-            };
+                mm = new MOBILE('IOS','IOS');
+            }
+            else if(params.contains('h5')){
+                var result = tmpl(window.TMPL.mbody, { ID: 'H5'});
+                $('#wrapper').html(result);
+
+                mm = new MOBILE('H5','H5');
+            }
         }
     };
 
