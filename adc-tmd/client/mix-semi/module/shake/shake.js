@@ -105,7 +105,7 @@
 
             this.shakeTimes++;
 
-//            if(timeDifference > 100 && this.shakeTimes > 1){
+//            if(timeDifference > 1000 && this.shakeTimes > 6){
 //                this.event.deltaX = current.x;
 //                this.event.deltaY = current.y;
 //                this.event.deltaZ = current.z;
@@ -122,6 +122,7 @@
             window.dispatchEvent(this.event);
             this.shakeTimes = 0;
             this.lastTime = new Date();
+
 
 //            this.event.deltaX = current.x;
 //            this.event.deltaY = current.y;

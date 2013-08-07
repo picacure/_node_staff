@@ -1598,6 +1598,475 @@ window.Zepto = Zepto
         return false;
     }
 })(this);
+;(function(win, undef) {
+    var doc = win.document,
+        hasOwnProperty = Object.prototype.hasOwnProperty,
+        WindVane = win.WindVane || (win.WindVane = {}),
+        WindVane_Native = win.WindVane_Native,
+        callbackMap = {},
+        iframePool = [], iframeLimit = 3,
+   
+        WV_Data = {
+            LOCAL_PROTOCOL: 'hybrid',
+            KV_SPLIT: '=',
+            PARAM_SPLIT: '&',
+            MSG_TIMEOUT: 'TIMEOUT'
+        },
+   
+        WV_Core = {
+            call: function(obj, method, param, successCallback, failureCallback, timeout) {
+                var sid;
+
+                if (timeout > 0) {
+                    sid = setTimeout(function() {
+                        WV_Core.onFailure(sid, {ret:WV_Data.MSG_TIMEOUT});
+                    }, timeout);
+                } else {
+                    sid = WV_Private.getSid();
+                }
+
+                WV_Private.registerCall(sid, successCallback, failureCallback);
+
+                if (WindVane_Native && WindVane_Native.callMethod) {
+                    WindVane_Native.callMethod(obj, method, WV_Private.buildParam(param), sid + '');
+                } else {
+                    WV_Private.callMethod(obj, method, WV_Private.buildParam(param), sid + '');
+                }
+            },
+       
+            fireEvent: function(eventname, eventparam) {
+                var ev = doc.createEvent('HTMLEvents');
+                ev.initEvent(eventname, false, true);
+                ev.param = WV_Private.parseParam(eventparam);
+                doc.dispatchEvent(ev);
+            },
+
+            // {ret:'SUCCESS', value:{'a':1}}
+            onSuccess: function(sid, msg) {
+                clearTimeout(sid);
+                var func = WV_Private.unregisterCall(sid).success,
+                    param = WV_Private.parseParam(msg);
+                
+                func && func(param.value || param);
+
+                if (WindVane_Native && WindVane_Native.onComplete) {
+                    WindVane_Native.onComplete(sid);
+                } else {
+                    WV_Private.onComplete(sid);
+                }
+            },
+
+
+            // {ret:'FAILURE', value:{'a':1}}
+            onFailure: function(sid, msg) {
+                clearTimeout(sid);
+                var func = WV_Private.unregisterCall(sid).failure,
+                    param = WV_Private.parseParam(msg);
+
+                func && func(param.value || param);
+                
+                if (WindVane_Native && WindVane_Native.onComplete) {
+                    WindVane_Native.onComplete(sid);
+                } else {
+                    WV_Private.onComplete(sid);
+                }
+            }
+        },
+   
+        WV_Private = {
+            //ifUseIframe: false,
+
+            buildParam: function(obj) {
+                if (obj && typeof obj === 'object') {
+                    return JSON.stringify(obj);
+                } else {
+                    return obj || '';
+                }
+            },
+
+            parseParam: function(str) {
+                if (str && typeof str === 'string') {
+                    try {
+                        obj = JSON.parse(str);
+                    } catch(e) {
+                        obj = eval('(' + str + ')');
+                    }
+                } else {
+                    obj = str || {};
+                }
+
+                return obj;
+            },
+
+            getSid: function() {
+                return Math.floor(Math.random() * (1 << 50));
+            },
+       
+            getIframeId: function(sid) {
+                return 'iframe_' + sid;
+            },
+
+            getSuccessId: function(sid) {
+                return 'suc' + sid;
+            },
+       
+            getFailedId: function(sid) {
+                return 'err_' + sid;
+            },
+       
+            registerCall: function(sid, successCallback, failedCallback) {
+                if (successCallback) {
+                    callbackMap[this.getSuccessId(sid)] = successCallback;
+                }
+       
+                if (failedCallback) {
+                    callbackMap[this.getFailedId(sid)] = failedCallback;
+                }
+            },
+       
+            unregisterCall: function(sid) {
+                var sucId = this.getSuccessId(sid),
+                    failId = this.getFailedId(sid)
+                    call = {
+                        success: callbackMap[sucId],
+                        failure: callbackMap[failId]
+                    }
+                    ;
+
+                delete callbackMap[sucId];
+                delete callbackMap[failId];
+                return call;
+            },
+
+            useIframe: function(sid, url) {
+                //this.ifUseIframe || (this.ifUseIframe = true);
+
+                var iframeid = this.getIframeId(sid),
+                    iframe = iframePool.pop()
+                    ;
+
+                if (!iframe) {
+                    iframe = doc.createElement('iframe');
+                    iframe.setAttribute('frameborder', '0');
+                    iframe.style.cssText = 'width:0;height:0;border:0;display:none;';
+                }
+
+                iframe.setAttribute('id', iframeid);
+                iframe.setAttribute('src', url);
+
+                if (!iframe.parentNode) {
+                    setTimeout(function() {
+                        doc.body.appendChild(iframe);
+                    },5);
+                }
+            },
+
+            retrieveIframe : function(sid) {
+                //if (!this.ifUseIframe) return;
+
+                var iframeid = this.getIframeId(sid),
+                    iframe = doc.querySelector('#' + iframeid)
+                    ;
+
+                if (iframePool.length >= iframeLimit) {
+                    doc.body.removeChild(iframe);
+                } else {
+                    iframePool.push(iframe);
+                }
+            },
+
+            callMethod: function(obj, method, param, sid) {
+                // [for protocol] hybrid://objectName:sid/methodName?{a:'b',c:'d'}
+                var src = WV_Data.LOCAL_PROTOCOL + '://' + obj + ':' + sid + '/' + method + '?' + param;
+                this.useIframe(sid, src);
+            },
+
+            onComplete: function(sid) {
+                this.retrieveIframe(sid);
+            }
+        }
+        ;
+
+    for (var key in WV_Core) {
+        if (!hasOwnProperty.call(WindVane, key)) {
+            WindVane[key] = WV_Core[key];
+        }
+    }
+})(window);
+;(function(win, wv) {
+	if (!wv) return;
+	var doc = win.document;
+
+	function wrapSuccess(callback) {
+		return function(e) {
+			callback && callback(e);
+		}
+	}
+
+	function wrapFailure(callback) {
+		return function(e) {
+			callback && callback(e);
+		}
+	}
+
+	function indexOf(list, e) {
+		for (var i = 0; i < list.length; i++) {
+			if (e === list[i]) return i;
+		}
+		return -1;
+	}
+
+	wv.api = {};
+
+	wv.api.navigation = (function() {
+		var btnmap = {}, idmap = {};
+
+		win.addEventListener(window.onpagehide?'pagehide':'unload', function() {
+			wv.api.navigation.reset()
+		}, false);
+
+		doc.addEventListener('navigation.btn', function(e) {
+			var param = e.param,
+				id = param.id,
+				btn = btnmap[id];
+
+			if (btn) {
+				btn.handler(e);
+			}
+		}, false);
+
+		return {
+			ready: function(callback) {
+				var p = {};
+				wv.call('TBNavigationBar', 'isReady', p, wrapSuccess(callback), wrapFailure());
+			},
+
+			setTitle: function(title) {
+				var p = {
+					title : title
+				};
+				wv.call('TBNavigationBar', 'setNavigationTitle', p, wrapSuccess(), wrapFailure());
+			},
+
+			setButton: function(options) {
+				var p = {
+					id: idmap[options.id] || Math.floor(Math.random() * 1024) + Object.keys(btnmap).length * 10000,
+					type: options.type || '',
+					text: options.text || '',
+					hide: !!options.hide
+				}
+				idmap[options.id] = p.id;
+				btnmap[p.id] = options;
+
+				wv.call('TBNavigationBar', 'setNavigationButton', p, wrapSuccess(), wrapFailure());
+			},
+
+			switch: function(title, type) {
+				var p = {
+					title : title,
+					type : type
+				};
+
+				wv.call('TBNavigationBar', 'setNavigationBar', p, wrapSuccess(), wrapFailure());
+			},
+
+			reset: function(callback) {
+				var p = {};
+				wv.call('TBNavigationBar', 'resetNavigationBar', p, function(e){
+					callback && callback();
+				}, wrapFailure());
+			}
+		}
+	})();
+
+	wv.api.view = (function() {
+		var pullDownHandler = [],
+			pullUpHandler = [];
+
+
+		doc.addEventListener('view.pulldown', function(e) {
+			pullDownHandler.forEach(function(func) {
+				func(e);
+			});
+		}, false);
+
+		doc.addEventListener('view.pullup', function(e) {
+			pullUpHandler.forEach(function(func) {
+				func(e);
+			});
+		}, false);
+
+		return  {
+			showLoading: function(text) {
+				var p = {
+					text: text
+				};
+				wv.call('WVView', 'showLoading', p, wrapSuccess(), wrapFailure());
+			},
+			hideLoading: function() {
+				var p = {};
+				wv.call('WVView', 'hideLoading', p, wrapSuccess(), wrapFailure());
+			},
+			onPulldown: function(handler) {
+				if (pullDownHandler.length === 0) {
+					var p = {
+						on: true
+					};
+					wv.call('WVView', 'listeningPulldown', p, wrapSuccess(), wrapFailure());
+				}
+
+				if (indexOf(pullDownHandler, handler) < 0)
+					pullDownHandler.push(handler);
+			},
+			onPullup: function(handler) {
+				if (pullUpHandler.length === 0) {
+					var p = {
+						on: true
+					};
+					wv.call('WVView', 'listeningPullup', p, wrapSuccess(), wrapFailure());
+				}
+				if (indexOf(pullUpHandler, handler) < 0)
+					pullUpHandler.push(handler);
+			},
+			offPulldown: function(handler) {
+				if (!handler) {
+					pullDownHandler = [];
+				} else {
+					var index;
+					if ((index = indexOf(pullDownHandler, handler)) >=0) {
+						pullDownHandler.splice(index, 1);
+					}
+				}
+				if (pullDownHandler.length === 0) {
+					var p = {
+						on: false
+					};
+					wv.call('WVView', 'listeningPulldown', p, wrapSuccess(), wrapFailure());
+				}
+			},
+			offPullup: function(handler) {
+				if (!handler) {
+					pullUpHandler = [];
+				} else {
+					var index;
+					if ((index = indexOf(pullUpHandler, handler)) >=0) {
+						pullUpHandler.splice(index, 1);
+					}
+				}
+				if (pullUpHandler.length === 0) {
+					var p = {
+						on: false
+					};
+					wv.call('WVView', 'listeningPullup', p, wrapSuccess(), wrapFailure());
+				}
+			},
+			resetPulldown: function() {
+				var p = {};
+				wv.call('WVView', 'resetPulldown', p, wrapSuccess(), wrapFailure());
+			},
+			resetPullup: function() {
+				var p = {};
+				wv.call('WVView', 'resetPullup', p, wrapSuccess(), wrapFailure());
+			}
+		}
+	})();
+
+
+	wv.api.camera = (function() {
+		return {
+			open: function(callback) {
+				var p = {};
+				wv.call('test', 'test', p, wrapSuccess(), wrapFailure());
+			}
+		}
+	})();
+
+	wv.api.motion = (function() {
+		var shakeHandler = [];
+
+		doc.addEventListener('motion.shake', function(e) {
+			shakeHandler.forEach(function(func) {
+				func(e);
+			})
+		}, false);
+
+		return {
+			onShake: function(handler) {
+				if (shakeHandler.length === 0) {
+					var p = {
+						on: true
+					};
+					wv.call('WVMotion', 'listeningShake', p, wrapSuccess(), wrapFailure());
+				}
+
+				if (indexOf(shakeHandler, handler) < 0)
+					shakeHandler.push(handler);
+			},
+			offShake: function(handler) {
+				if (!handler) {
+					shakeHandler = [];
+				} else {
+					var index;
+					if ((index = indexOf(shakeHandler, handler)) >=0) {
+						shakeHandler.splice(index, 1);
+					}
+				}
+				if (shakeHandler.length === 0) {
+					var p = {
+						on: false
+					};
+					wv.call('WVMotion', 'listeningShake', p, wrapSuccess(), wrapFailure());
+				}
+			}
+		}
+	})();
+
+	wv.api.geolocation = (function() {
+		return {
+			get: function(callback) {
+				var p = {}
+				wv.call('WVLocation', 'getLocation', p, wrapSuccess(callback), wrapFailure());
+			},
+			search: function(addrs, callback) {
+				var p = {
+					addrs: addrs
+				}
+				wv.call('WVLocation', 'searchLocation', p, wrapSuccess(callback), wrapFailure());
+			}
+		}
+	})();
+
+	wv.api.cookies = (function() {
+		return {
+			read: function(url, callback) {
+				var p = {
+					url: url
+				};
+				wv.call('WVCookie', 'readCookies', p, wrapSuccess(callback), wrapFailure());
+			},
+
+			write: function(name, value, options, callback) {
+				if (arguments.length === 3 && typeof arguments[2] === 'function') {
+					callback = arguments[2];
+					options = {};
+				}
+
+				var p = {
+					name: name,
+					value: value
+				};
+
+				for (var k in options) {
+					p[k] = options[k];
+				}
+
+				wv.call('WVCookie', 'writeCookies', p, wrapSuccess(callback), wrapFailure());
+			}
+		}
+	})();
+
+	
+})(window, window['WindVane']);
 ;/*
  *
  * Find more about this plugin by visiting
@@ -1705,7 +2174,7 @@ window.Zepto = Zepto
 
             this.shakeTimes++;
 
-//            if(timeDifference > 100 && this.shakeTimes > 1){
+//            if(timeDifference > 1000 && this.shakeTimes > 6){
 //                this.event.deltaX = current.x;
 //                this.event.deltaY = current.y;
 //                this.event.deltaZ = current.z;
@@ -1722,6 +2191,7 @@ window.Zepto = Zepto
             window.dispatchEvent(this.event);
             this.shakeTimes = 0;
             this.lastTime = new Date();
+
 
 //            this.event.deltaX = current.x;
 //            this.event.deltaY = current.y;
@@ -6648,14 +7118,24 @@ var QRCode;
 
             //新的终端接入.
             _self.socket.on(FRM_MSG.PC_M_CONNECT_RES, function (data) {
-                $('.tip').text(data.ID + '成功接入');
+                $('.tip').text(data.ID + '成功接入,开始LV吧');
             });
 
             //摇晃数据.
             _self.socket.on(CUSTOMER_MSG.PC_SHAKE_RES, function (data) {
-                $('.tip').text('开始摇晃吧');
 
-                _self.canvas.grow();
+                if(data.shakeArg.ID == 'H5'){
+                    _self.canvas.grow();
+                }
+                else if(data.shakeArg.ID == 'IOS'){
+                    _self.canvas.grow(0.4);
+                }
+                else{
+                    throw {
+                        error: 'PC listen'
+                    }
+                }
+
             });
         },
         getSocket: function(){
@@ -6712,19 +7192,34 @@ var QRCode;
             var _self = this
                 ;
 
-            window.addEventListener('shake', function(e){
+            if(_self.ID == 'H5'){
+                window.addEventListener('shake', function(e){
 
-                _self.emitShake({
-                    ID: _self.ID,
-                    deltaX: e.deltaX,
-                    deltaY: e.deltaY,
-                    deltaZ: e.deltaZ
+                    _self.emitShake({
+                        ID: _self.ID,
+                        deltaX: e.deltaX,
+                        deltaY: e.deltaY,
+                        deltaZ: e.deltaZ
+                    });
+
+                }, false);
+
+                _self.shake = new window.Shake();
+                _self.shake.start();
+            }
+            else if(_self.ID == 'IOS'){
+
+                //alert(window.api.motion);
+                window.WindVane.api.motion.onShake(function(){
+                    _self.emitShake({
+                        ID: _self.ID,
+                        deltaX: 0,
+                        deltaY: 0,
+                        deltaZ: 0
+                    });
                 });
+            }
 
-            }, false);
-
-            _self.shake = new window.Shake();
-            _self.shake.start();
         },
         emitShake: function(obj){
             this.socket.emit(CUSTOMER_MSG.M_SHAKE_REQ, {shakeArg: obj});

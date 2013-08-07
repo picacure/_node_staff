@@ -3,6 +3,9 @@ template/v0.1/final.js
 module/zepto/zepto.js
 module/util/util.js
 
+module/hybrid/bridge.js
+module/hybrid/api.js
+
 module/shake/shake.js
 module/eventEmitter/eventEmitter.js
 module/socket.io/socket.io.js

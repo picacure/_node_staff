@@ -73,14 +73,24 @@
 
             //新的终端接入.
             _self.socket.on(FRM_MSG.PC_M_CONNECT_RES, function (data) {
-                $('.tip').text(data.ID + '成功接入');
+                $('.tip').text(data.ID + '成功接入,开始LV吧');
             });
 
             //摇晃数据.
             _self.socket.on(CUSTOMER_MSG.PC_SHAKE_RES, function (data) {
-                $('.tip').text('开始摇晃吧');
 
-                _self.canvas.grow();
+                if(data.shakeArg.ID == 'H5'){
+                    _self.canvas.grow();
+                }
+                else if(data.shakeArg.ID == 'IOS'){
+                    _self.canvas.grow(0.4);
+                }
+                else{
+                    throw {
+                        error: 'PC listen'
+                    }
+                }
+
             });
         },
         getSocket: function(){
@@ -137,19 +147,34 @@
             var _self = this
                 ;
 
-            window.addEventListener('shake', function(e){
+            if(_self.ID == 'H5'){
+                window.addEventListener('shake', function(e){
 
-                _self.emitShake({
-                    ID: _self.ID,
-                    deltaX: e.deltaX,
-                    deltaY: e.deltaY,
-                    deltaZ: e.deltaZ
+                    _self.emitShake({
+                        ID: _self.ID,
+                        deltaX: e.deltaX,
+                        deltaY: e.deltaY,
+                        deltaZ: e.deltaZ
+                    });
+
+                }, false);
+
+                _self.shake = new window.Shake();
+                _self.shake.start();
+            }
+            else if(_self.ID == 'IOS'){
+
+                //alert(window.api.motion);
+                window.WindVane.api.motion.onShake(function(){
+                    _self.emitShake({
+                        ID: _self.ID,
+                        deltaX: 0,
+                        deltaY: 0,
+                        deltaZ: 0
+                    });
                 });
+            }
 
-            }, false);
-
-            _self.shake = new window.Shake();
-            _self.shake.start();
         },
         emitShake: function(obj){
             this.socket.emit(CUSTOMER_MSG.M_SHAKE_REQ, {shakeArg: obj});

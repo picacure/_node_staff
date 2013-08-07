@@ -19,56 +19,60 @@
         <div class="board">
             <canvas id="cOne" width="700px" height="500px">
             </canvas>
-            <div class="lao">
-                <img src="./images/2013-08-04-01.jpg">
-            </div>
         </div>
     </div>
 </div>
 <script>
 
-    var CurveOneX = 186,
-        CurveOneY = 186,
-        CurveStartX = 171,
-        CurveStartY = 237,
-        lineWidth = 6
-        ;
 
-
-    var Line_Params = {
-
-        //贝塞尔曲线.
-        CurveOneX : 186,
-        CurveOneY : 186,
-
-        CurveTwoX: 191,
-        CurveTwoY: 135,
-        CurveThreeX: 252,
-        CurveThreeY: 143,
-
-        //初始位置
-        CurveStartX : 171,
-        CurveStartY : 237,
-
-        //结束位置(一个坐标即可).
-        CurveOneXEnd : 133,
-        CurveXEnd : 14,
-
-        BaseLineWidth : 6,
-        StrokeStyle: '#333'
-    };
 
     var Init_Params = {
-        CurveStartX: 171,
-        CurveStartY : 237,
+        CurveX: 468,
+        CurveY : 363,
 
-        CurveOneX : 186,
-        CurveOneY : 186,
+        CurveXEnd : 92,
+        CurveYEnd : 179,
+
+
+        CurveOneX : 477,
+        CurveOneY : 212,
+
+        CurveOneXEnd : 402,
+        CurveOneYEnd : 160,
 
         LineGrowStep: 0.13,
 
         BaseLineWidth : 10
     };
+
+    var Line_Params = {
+
+        //贝塞尔曲线.
+        CurveOneX : Init_Params.CurveOneX,
+        CurveOneY : Init_Params.CurveOneY,
+
+        //结束位置(一个坐标即可).
+        CurveOneXEnd : Init_Params.CurveOneXEnd,
+        CurveOneYEnd : Init_Params.CurveOneYEnd,
+
+        CurveTwoX: 486,
+        CurveTwoY: 156,
+        CurveThreeX: 561,
+        CurveThreeY: 152,
+
+        //初始位置
+        CurveX : Init_Params.CurveX,
+        CurveY : Init_Params.CurveY,
+
+        CurveXEnd : Init_Params.CurveXEnd,
+        CurveYEnd : Init_Params.CurveYEnd,
+
+
+        BaseLineWidth : 6,
+        StrokeStyle: '#333'
+    };
+
+
 
     function Curve(){
         this.canvas = document.getElementById("cOne");
@@ -76,64 +80,33 @@
         this.ctx.lineWidth = Line_Params.BaseLineWidth;
         this.ctx.strokeStyle = Line_Params.StrokeStyle;
         this.ctx.beginPath();
-        this.ctx.moveTo(CurveStartX, CurveStartY);
-        this.ctx.bezierCurveTo(CurveOneX, CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
+        this.ctx.moveTo(Init_Params.CurveX, Init_Params.CurveY);
+        this.ctx.bezierCurveTo(Init_Params.CurveOneX, Init_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
         this.ctx.stroke();
     }
 
     Curve.prototype = {
         constructor: Curve,
-        grow:function(auto){
+        grow:function(step){
             var _self = this;
 
-            if(auto){
-                _self.growInterval = setInterval(function(){
+            if(step){
 
-                    if(Line_Params.CurveOneX > Line_Params.CurveOneXEnd){
-                        --Line_Params.CurveOneX;
-                        Line_Params.CurveOneY = _self.CurveOne(Line_Params.CurveOneX);
-                    }
-
-                    --Line_Params.CurveStartX;
-                    if(Line_Params.CurveStartX > Line_Params.CurveXEnd){
-                        Line_Params.CurveStartY = _self.CurveStart(Line_Params.CurveStartX);
-
-                        Line_Params.BaseLineWidth += Init_Params.LineGrowStep;
-                    }
-                    else{
-                        Line_Params.CurveStartX = Init_Params.CurveStartX;
-                        Line_Params.CurveStartY = Init_Params.CurveStartY;
-
-                        Line_Params.CurveOneX = Init_Params.CurveOneX,
-                        Line_Params.CurveOneY = Init_Params.CurveOneY,
-                        Line_Params.BaseLineWidth = Init_Params.BaseLineWidth;
-                    }
-
-                    _self.ctx.clearRect(0, 0, _self.canvas.width, _self.canvas.height);
-                    _self.ctx.lineWidth = Line_Params.BaseLineWidth;
-                    _self.ctx.strokeStyle = "#333";
-                    _self.ctx.beginPath();
-                    _self.ctx.moveTo(Line_Params.CurveStartX, Line_Params.CurveStartY);
-                    _self.ctx.bezierCurveTo(Line_Params.CurveOneX, Line_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
-                    _self.ctx.stroke();
-
-                }, 100);
-            }
-            else{
+                //中间弧线的速度幅度变化小.
                 if(Line_Params.CurveOneX > Line_Params.CurveOneXEnd){
-                    --Line_Params.CurveOneX;
+                    Line_Params.CurveOneX -= 10;
                     Line_Params.CurveOneY = _self.CurveOne(Line_Params.CurveOneX);
                 }
 
-                --Line_Params.CurveStartX;
-                if(Line_Params.CurveStartX > Line_Params.CurveXEnd){
-                    Line_Params.CurveStartY = _self.CurveStart(Line_Params.CurveStartX);
+                Line_Params.CurveX -= 15;
+                if(Line_Params.CurveX > Line_Params.CurveXEnd){
+                    Line_Params.CurveY = _self.CurveStart(Line_Params.CurveX);
 
-                    Line_Params.BaseLineWidth += Init_Params.LineGrowStep;
+                    Line_Params.BaseLineWidth += step;
                 }
                 else{
-                    Line_Params.CurveStartX = Init_Params.CurveStartX;
-                    Line_Params.CurveStartY = Init_Params.CurveStartY;
+                    Line_Params.CurveX = Init_Params.CurveX;
+                    Line_Params.CurveY = Init_Params.CurveY;
 
                     Line_Params.CurveOneX = Init_Params.CurveOneX,
                     Line_Params.CurveOneY = Init_Params.CurveOneY,
@@ -144,15 +117,46 @@
                 _self.ctx.lineWidth = Line_Params.BaseLineWidth;
                 _self.ctx.strokeStyle = "#333";
                 _self.ctx.beginPath();
-                _self.ctx.moveTo(Line_Params.CurveStartX, Line_Params.CurveStartY);
+                _self.ctx.moveTo(Line_Params.CurveX, Line_Params.CurveY);
+                _self.ctx.bezierCurveTo(Line_Params.CurveOneX, Line_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
+                _self.ctx.stroke();
+            }
+            else{
+
+                //中间弧线的速度幅度变化小.
+                if(Line_Params.CurveOneX > Line_Params.CurveOneXEnd){
+                    Line_Params.CurveOneX = Line_Params.CurveOneX - 0.5;
+                    Line_Params.CurveOneY = _self.CurveOne(Line_Params.CurveOneX);
+                }
+
+                --Line_Params.CurveX;
+                if(Line_Params.CurveX > Line_Params.CurveXEnd){
+                    Line_Params.CurveY = _self.CurveStart(Line_Params.CurveX);
+
+                    Line_Params.BaseLineWidth += Init_Params.LineGrowStep;
+                }
+                else{
+                    Line_Params.CurveX = Init_Params.CurveX;
+                    Line_Params.CurveY = Init_Params.CurveY;
+
+                    Line_Params.CurveOneX = Init_Params.CurveOneX,
+                    Line_Params.CurveOneY = Init_Params.CurveOneY,
+                    Line_Params.BaseLineWidth = Init_Params.BaseLineWidth;
+                }
+
+                _self.ctx.clearRect(0, 0, _self.canvas.width, _self.canvas.height);
+                _self.ctx.lineWidth = Line_Params.BaseLineWidth;
+                _self.ctx.strokeStyle = "#333";
+                _self.ctx.beginPath();
+                _self.ctx.moveTo(Line_Params.CurveX, Line_Params.CurveY);
                 _self.ctx.bezierCurveTo(Line_Params.CurveOneX, Line_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
                 _self.ctx.stroke();
             }
 
         },
         reset: function(){
-            Line_Params.CurveStartX = Init_Params.CurveStartX;
-            Line_Params.CurveStartY = Init_Params.CurveStartY;
+            Line_Params.CurveX = Init_Params.CurveX;
+            Line_Params.CurveY = Init_Params.CurveY;
 
             Line_Params.CurveOneX = Init_Params.CurveOneX,
             Line_Params.CurveOneY = Init_Params.CurveOneY,
@@ -162,17 +166,20 @@
             this.ctx.lineWidth = Line_Params.BaseLineWidth;
             this.ctx.strokeStyle = Line_Params.StrokeStyle;
             this.ctx.beginPath();
-            this.ctx.moveTo(CurveStartX, CurveStartY);
-            this.ctx.bezierCurveTo(CurveOneX, CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
+            this.ctx.moveTo(Init_Params.CurveX, Init_Params.CurveY);
+            this.ctx.bezierCurveTo(Init_Params.CurveOneX, Init_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
             this.ctx.stroke();
         },
         CurveOne: function(x){
-            return (59/53) * x + (186-186 * 59 /53);
+            return (Init_Params.CurveOneY - Init_Params.CurveOneYEnd)/(Init_Params.CurveOneX - Init_Params.CurveOneXEnd) * x +
+                    (Init_Params.CurveOneYEnd - Init_Params.CurveOneXEnd * (Init_Params.CurveOneY - Init_Params.CurveOneYEnd)/(Init_Params.CurveOneX - Init_Params.CurveOneXEnd));
         },
         CurveStart: function(x){
-            return (122/157) * x + (237 - 171 * 122/157);
+            return (Init_Params.CurveY - Init_Params.CurveYEnd)/(Init_Params.CurveX - Init_Params.CurveXEnd) * x + (Init_Params.CurveYEnd - Init_Params.CurveXEnd * (Init_Params.CurveY - Init_Params.CurveYEnd)/(Init_Params.CurveX - Init_Params.CurveXEnd));
         }
     }
+
+
 
 </script>
 

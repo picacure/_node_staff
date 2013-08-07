@@ -56,12 +56,6 @@ io.sockets.on('connection', function (socket) {
                 //部分接入.
                 pcSocket.emit(MSG_TYPE.PC_M_CONNECT_RES, data);
 
-                //全部接入.
-                if(TokenArr.length == 0){
-                    console.log('全部接入');
-                    pcSocket.emit(MSG_TYPE.PC_M_ALL_CONNECT_RES, data);
-                }
-
                 console.log(TokenArr.length);
             }
         }
@@ -71,27 +65,6 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
-    //发送消息给所有M端，开始摇晃.
-    socket.on(MSG_TYPE.PC_M_SHAKE_START_TIP, function (data) {
-        console.log('发送消息给所有M端，开始摇晃');
-        if(MSocket.length > 0){
-            for(var i = 0,len = MSocket.length; i < len; i++){
-                MSocket[i].emit(MSG_TYPE.M_SHAKE_INIT, {});
-            }
-        }
-    });
-
-    //重玩.
-    socket.on(MSG_TYPE.PC_REPLAY, function (data) {
-        if(MSocket.length > 0){
-            for(var i = 0,len = MSocket.length; i < len; i++){
-                MSocket[i].emit(MSG_TYPE.M_REPLAY, data);
-            }
-
-            console.log(data);
-            MSocket = [];
-        }
-    });
 
     //M端晃动数据.
     socket.on(MSG_TYPE.M_SHAKE_REQ, function (data) {
