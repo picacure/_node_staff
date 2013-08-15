@@ -7128,7 +7128,7 @@ var QRCode;
                     _self.canvas.grow();
                 }
                 else if(data.shakeArg.ID == 'IOS'){
-                    _self.canvas.grow(0.4);
+                    _self.canvas.grow(2);
                 }
                 else{
                     throw {
@@ -7172,7 +7172,7 @@ var QRCode;
 
             //Token 失效.
             this.socket.on(FRM_MSG.M_TOKEN_INVALID, function (data) {
-                $('.mID').html('Token 失效<br>请重新扫描二维码');
+                $('.mID').html('Token 失效');
             });
 
             //正常接入.
@@ -7192,33 +7192,46 @@ var QRCode;
             var _self = this
                 ;
 
-            if(_self.ID == 'H5'){
-                window.addEventListener('shake', function(e){
+//            if(_self.ID == 'H5'){
+//                window.addEventListener('shake', function(e){
+//
+//                    _self.emitShake({
+//                        ID: _self.ID,
+//                        deltaX: e.deltaX,
+//                        deltaY: e.deltaY,
+//                        deltaZ: e.deltaZ
+//                    });
+//
+//                }, false);
+//
+//                _self.shake = new window.Shake();
+//                _self.shake.start();
+//            }
+//            else if(_self.ID == 'IOS'){
+//
+//                //alert(window.api.motion);
+//                window.WindVane.api.motion.onShake(function(){
+//                    _self.emitShake({
+//                        ID: _self.ID,
+//                        deltaX: 0,
+//                        deltaY: 0,
+//                        deltaZ: 0
+//                    });
+//                });
+//            }
+            window.addEventListener('shake', function(e){
 
-                    _self.emitShake({
-                        ID: _self.ID,
-                        deltaX: e.deltaX,
-                        deltaY: e.deltaY,
-                        deltaZ: e.deltaZ
-                    });
-
-                }, false);
-
-                _self.shake = new window.Shake();
-                _self.shake.start();
-            }
-            else if(_self.ID == 'IOS'){
-
-                //alert(window.api.motion);
-                window.WindVane.api.motion.onShake(function(){
-                    _self.emitShake({
-                        ID: _self.ID,
-                        deltaX: 0,
-                        deltaY: 0,
-                        deltaZ: 0
-                    });
+                _self.emitShake({
+                    ID: _self.ID,
+                    deltaX: e.deltaX,
+                    deltaY: e.deltaY,
+                    deltaZ: e.deltaZ
                 });
-            }
+
+            }, false);
+
+            _self.shake = new window.Shake();
+            _self.shake.start();
 
         },
         emitShake: function(obj){
