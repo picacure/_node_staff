@@ -21,12 +21,14 @@ function readFromConfig(dir,file){
 	for(var i = 0; i < dirs.length; i++){
 
 		dirs[i] = dirs[i].trim();
+		
+		if(dirs[i].indexOf('**') == 0){
+			continue;
+		}
 
 		//替换所有目录的反斜杠.
 		if(dirs[i].indexOf(filter) == -1){
 			dirs[i] = dirs[i].replace(/\//g,'\\');
-
-			
 		}
 		
 

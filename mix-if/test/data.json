@@ -1,0 +1,12 @@
+{
+    "api" : "mtop.msp.game.hjggk.doAward",
+    "v" : "1.0",
+    "ret" :
+    [
+        "NOT_WIN::未中奖"
+    ],
+    "data" :
+    {
+        "remainCount" : "1736"
+    }
+}

@@ -1,0 +1,18 @@
+<div>
+    <h2 class="date">日期   <%= date %></h2>
+</div>
+<% for(var i in this){ var cells = this[i].items || {}; %>
+<div style="margin-left: 40px;">
+    <h2><%= this[i].name %></h2>
+    <% for(var poll in cells){  %>
+        <% for(var j = 0,len = cells[poll].length; j < len;j++){  %>
+
+            <% if(cells[poll][j].indexOf('http') > -1){  %>
+                <a href="<%= cells[poll][j] %>"><%= cells[poll][j] %></a>
+            <% }else {  %>
+                <span class="affair"><%= cells[poll][j] %></span>
+            <% } %>
+        <% } %>
+    <% } %>
+</div>
+<% } %>

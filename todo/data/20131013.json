@@ -1,0 +1,41 @@
+{ "0" : { "items" : { "0" : [ "摇红包，向小伙伴炫耀，地址确定" ],
+          "1" : [ "你的版本不是最新版本，文案确定" ],
+          "2" : [ "埋点",
+              "yes"
+            ],
+          "3" : [ "100元，10元接口，需要和大进确认，重新修改" ]
+        },
+      "name" : ""
+    },
+  "1" : { "items" : { "0" : [ "你中我也中的分享绑定 地址修改" ],
+          "1" : [ "http://msp.m.taobao.com/awdextra/crazy_taobao_shake_luck_bind.do?fromUserNick=\"%E4%B8%AB%E4%B8%AB%E8%84%9A%E5%B0%8F\"" ]
+        },
+      "name" : "925上线前要做的事情"
+    },
+  "2" : { "items" : { "0" : [ "http://msp.waptest.taobao.com/awdextra/crazy_taobao_shake_luck_bind.do?fromUserNick=tbseed32" ],
+          "1" : [ "http://msp.m.taobao.com/awdextra/crazy_taobao_shake_luck_bind.do?fromUserNick=tbseed32" ],
+          "2" : [ "http://msp.wapa.taobao.com/awdextra/crazy_taobao_shake_luck_bind.do?fromUserNick=tbseed32" ]
+        },
+      "name" : "  分享地址便签"
+    },
+  "3" : { "items" : { "0" : [ "http://wapp.m.taobao.com/alone/act/925/red.html" ],
+          "1" : [ "http://wapp.m.taobao.com/alone/act/925/coin.html" ],
+          "2" : [ "http://wapp.m.taobao.com/alone/act/925/4999.html" ],
+          "3" : [ "http://wapp.m.taobao.com/alone/act/925/red_tips.html" ]
+        },
+      "name" : "线上地址"
+    },
+  "4" : { "items" : { "0" : [ "http://a.tbcdn.cn/mw/app/lottery/20131111/style/snake.css" ],
+          "1" : [ "http://a.tbcdn.cn/mw/app/lottery/20131111/js/main.js" ],
+          "2" : [ "http://wapp.m.taobao.com/alone/act/1111/index.htm" ],
+          "3" : [ "http://h5.waptest.taobao.com/alone/act/1111/index.html?spm=0.0.0.0.u9ROar" ]
+        },
+      "name" : "双十一"
+    },
+  "5" : { "items" : { "0" : [ "  //        setTimeout(function(){ //            Game.render(); // //            var img=document.getElementById(\"tulip\"); //            ctx.drawImage(img,100,100,30,30); // //        },2000);" ] },
+      "name" : "简单记"
+    },
+  "6" : { "items" : { "0" : [ "http://h5.m.taobao.com/alone/act/1111/smartbanner.html" ] },
+      "name" : " 双十一 URL"
+    }
+}

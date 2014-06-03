@@ -1,4 +1,4 @@
-var express = require("express"),
+var express = require("./node_modules/express"),
     app = express(),
     server = require('http').createServer(app),
     io = require('./node_modules/socket.io/').listen(server)

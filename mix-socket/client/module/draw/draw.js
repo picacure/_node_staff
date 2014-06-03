@@ -23,10 +23,15 @@
 
         this.color = options.color || 'red';
 
+        //隐藏后不再画线.
+        this.isHide = false;
+
         wrapper.appendChild(myCanvas);
     };
 
     draw.prototype.drawLine = function(xV,yV){
+        if(this.isHide) return;
+
         var len = this.line.length - 1;
 
         //解决clearRect失效的问题 http://stackoverflow.com/questions/9743027/clearrect-not-working
@@ -45,6 +50,31 @@
             x:xV,
             y:yV
         });
+    };
+
+    //画成组的线.
+    draw.prototype.drawLines = function(points){
+        if(this.isHide) return;
+
+        //解决clearRect失效的问题 http://stackoverflow.com/questions/9743027/clearrect-not-working
+        this.context.beginPath();
+
+
+        for(var i = 0,len = points.length; i < len - 1; i++){
+            this.context.lineWidth = 1;
+            this.context.strokeStyle = this.color;
+            this.context.moveTo(points[i].x, points[i].y);
+            this.context.lineTo(points[i + 1].x, points[i + 1].y);
+            this.context.stroke();
+        }
+    };
+
+    draw.prototype.hide = function(){
+        this.isHide = true;
+    };
+
+    draw.prototype.show = function(){
+        this.isHide = false;
     };
 
     draw.prototype.size = function(){
