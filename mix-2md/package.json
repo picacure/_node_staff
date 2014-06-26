@@ -1,27 +1,27 @@
 {
-  "name": "mix-2md",
-  "version": "0.0.1",
-  "description": "json 2 md",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bin": {
-    "mix-2md": "./bin/init.js"
-  },
-  "repository": "",
-  "keywords": [
-    "json2md",
-    ""
-  ],
-  "author": {
-    "name": "JiangC"
-  },
-  "dependencies": {
-    "ejs": ">= 0.8.3"
-  },
-  "license": "BSD",
-  "readme": "json 2 md test",
-  "readmeFilename": "readme.txt",
-  "_id": "mix-2md@0.0.1",
-  "_from": "mix-2md"
+    "name": "mix-2md",
+    "version": "0.0.1",
+    "description": "json 2 md",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "mix-2md": "./bin/init.js"
+    },
+    "repository": "",
+    "keywords": [
+        "json2md",
+        ""
+    ],
+    "author": {
+        "name": "JiangC"
+    },
+    "dependencies": {
+        "ejs": ">= 0.8.3"
+    },
+    "license": "BSD",
+    "readme": "json 2 md test",
+    "readmeFilename": "readme.txt",
+    "_id": "mix-2md@0.0.1",
+    "_from": "mix-2md"
 }

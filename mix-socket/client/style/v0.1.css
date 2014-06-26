@@ -1,66 +1,77 @@
 .mQrCode {
-  position: fixed;
-  right: 10px;
-  top: 10px;
-  display: inline-block;
-  width: 150px;
-  height: 150px;
-  margin-left: 10px;
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    margin-left: 10px;
 }
+
 .tips {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: 200px;
-  opacity: 0.4;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 200px;
+    opacity: 0.4;
 }
+
 .tips #consolePad {
-  font-size: 8px;
-  margin: 20px;
+    font-size: 8px;
+    margin: 20px;
 }
+
 .tips #axisPad {
-  font-size: 8px;
-  margin: 20px;
+    font-size: 8px;
+    margin: 20px;
 }
+
 .mbox {
-  text-align: center;
-  font-size: 24px;
+    text-align: center;
+    font-size: 24px;
 }
+
 .mbox .txt {
-  height: 50px;
-  line-height: 50px;
+    height: 50px;
+    line-height: 50px;
 }
+
 .mbox .mID {
-  height: 200px;
-  line-height: 200px;
-  font-size: 80px;
-  font-weight: bolder;
-  color: red;
+    height: 200px;
+    line-height: 200px;
+    font-size: 80px;
+    font-weight: bolder;
+    color: red;
 }
+
 .mbox .console {
-  height: 40px;
-  width: 300px;
-  background-color: #AEBDCC;
+    height: 40px;
+    width: 300px;
+    background-color: #AEBDCC;
 }
+
 .ctrBtn {
-  position: fixed;
-  right: 20px;
-  bottom: 300px;
-  border: 1px solid;
-  width: 70px;
-  height: 30px;
-  text-align: center;
-  line-height: 30px;
+    position: fixed;
+    right: 20px;
+    bottom: 300px;
+    border: 1px solid;
+    width: 70px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
 }
+
 .board {
-  font-size: 10px;
-  width: 80%;
+    font-size: 10px;
+    width: 80%;
 }
+
 .board figure {
-  height: 30px;
-  line-height: 30px;
+    height: 30px;
+    line-height: 30px;
 }
+
 .board figure .boardCtl {
-  color: red;
-  font-size: 14px;
+    color: red;
+    font-size: 14px;
 }

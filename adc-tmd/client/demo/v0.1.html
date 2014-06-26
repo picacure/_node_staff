@@ -30,11 +30,11 @@
 <script>
 
     var CurveOneX = 186,
-        CurveOneY = 186,
-        CurveStartX = 171,
-        CurveStartY = 237,
-        lineWidth = 6
-        ;
+            CurveOneY = 186,
+            CurveStartX = 171,
+            CurveStartY = 237,
+            lineWidth = 6
+            ;
 
     var canvas = document.getElementById("cOne");
     var ctx = canvas.getContext("2d");
@@ -46,21 +46,21 @@
     ctx.stroke();
 
 
-    var grow = setInterval(function(){
+    var grow = setInterval(function () {
 
 
-        if(CurveOneX > 133){
+        if (CurveOneX > 133) {
             --CurveOneX;
             CurveOneY = CurveOne(CurveOneX);
         }
 
         --CurveStartX;
-        if(CurveStartX > 14){
+        if (CurveStartX > 14) {
             CurveStartY = CurveStart(CurveStartX);
 
             lineWidth += 0.13;
         }
-        else{
+        else {
             CurveStartX = 171;
             CurveStartY = 237;
 
@@ -80,12 +80,12 @@
 
     }, 100);
 
-    function CurveOne(x){
-        return (59/53) * x + (186-186 * 59 /53);
+    function CurveOne(x) {
+        return (59 / 53) * x + (186 - 186 * 59 / 53);
     }
 
-    function CurveStart(x){
-        return (122/157) * x + (237 - 171 * 122/157);
+    function CurveStart(x) {
+        return (122 / 157) * x + (237 - 171 * 122 / 157);
     }
 </script>
 

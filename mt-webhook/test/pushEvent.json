@@ -1,0 +1,40 @@
+/**
+ * Created by jiangcheng.wxd on 14-6-10.
+ */
+{
+    "before": "2cf0f169c93339d3789f128798153b654ed7c620",
+    "after": "ecc2e98fb89604c05b6d92fccc3f75ea233b680f",
+    "ref": "refs/heads/master",
+    "user_id": 326,
+    "user_name": "江成",
+    "project_id": 18950,
+    "repository": {
+        "name": "app-qrbuy-plus",
+        "url": "git@gitlab.alibaba-inc.com:mtb/app-qrbuy-plus.git",
+        "description": "",
+        "homepage": "http://gitlab.alibaba-inc.com/mtb/app-qrbuy-plus"
+    },
+    "commits": [
+        {
+            "id": "ecc2e98fb89604c05b6d92fccc3f75ea233b680f",
+            "message": "app qrbuy plus",
+            "timestamp": "2014-06-06T21:25:32+08:00",
+            "url": "http://gitlab.alibaba-inc.com/mtb/app-qrbuy-plus/commit/ecc2e98fb89604c05b6d92fccc3f75ea233b680f",
+            "author": {
+                "name": "picacure",
+                "email": "jiangcheng.wxd@taobao.com"
+            }
+        },
+        {
+            "id": "2cf0f169c93339d3789f128798153b654ed7c620",
+            "message": "first commit",
+            "timestamp": "2014-06-06T11:45:13+08:00",
+            "url": "http://gitlab.alibaba-inc.com/mtb/app-qrbuy-plus/commit/2cf0f169c93339d3789f128798153b654ed7c620",
+            "author": {
+                "name": "picacure",
+                "email": "jiangcheng.wxd@taobao.com"
+            }
+        }
+    ],
+    "total_commits_count": 2
+}

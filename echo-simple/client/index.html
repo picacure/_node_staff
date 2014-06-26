@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Map simple</title>
+    <meta http-equiv="Content-Type" content="text/html, charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+
+    <script src='http://a.tbcdn.cn/g/mtb/zepto/1.0.2/zepto.js'></script>
+
+    <script type="text/javascript" src="http://g.tbcdn.cn/mtb/lib-mtop/0.5.13/mtop.js"></script>
+    <script type="text/javascript" src="http://g.tbcdn.cn/mtb/lib-login/0.2.5/login.js"></script>
+    <script type="text/javascript" src="http://g.tbcdn.cn/mtb/lib-windvane/1.2.4/bridge.js"></script>
+    <script type="text/javascript" src="http://g.tbcdn.cn/mtb/lib-windvane/1.2.4/api.js"></script>
+
+    <script src="http://webapi.amap.com/maps?v=1.2&key=5dd4ff0cfe836cb99b3c54d6a0833155" type="text/javascript"></script>
+
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            background: #005069;
+            overflow: hidden;
+        }
+
+    </style>
+
+    <!--<link type="text/css" rel="stylesheet" href="style/game.css">-->
+    <link type="text/css" rel="stylesheet/less" href="style/game.less">
+    <script src="lib/less.js"></script>
+
+    <script>
+
+        var ip = "http://10.73.108.133/gitlab/gamesandbox/321map/";
+
+        function loadScript(){
+            var s_arr = [
+                ip + "js/data.js",
+                ip + "lib/amap.js",
+                ip + "lib/pop.js",
+                ip + "lib/shake.js",
+                ip + "js/index.js"
+            ];
+
+            for(var i = 0,len = s_arr.length; i < len; i++){
+                var el = document.createElement('script');
+                el.src = s_arr[i] + '?t=' + Date.now();
+
+                document.head.appendChild(el);
+            }
+        }
+
+        function loadStyle(){
+            var s_arr = [
+                ip + "style/game.css"
+            ];
+
+            for(var i = 0,len = s_arr.length; i < len; i++){
+                var el = document.createElement('link');
+                el.type = "text/css";
+                el.rel = "stylesheet";
+                el.href = s_arr[i] + '?t=' + Date.now();
+
+                document.head.appendChild(el);
+            }
+        }
+
+        loadStyle();
+        loadScript();
+
+    </script>
+
+    <!--<script src="js/mock.json"></script>-->
+    <!--<script src="lib/amap.js"></script>-->
+    <!--<script src="lib/pop.js"></script>-->
+    <!--<script src="lib/shake.js"></script>-->
+    <!--<script src="js/index.js?t=1312321"></script>-->
+</head>
+<body>
+<div id="m_wrapper" class="hide">
+
+    <div class="m_packet">
+        卡券包
+    </div>
+</div>
+
+<div class="m_tip hide">
+    <div class="m_doll"></div>
+    <div class="m_tip_txt">
+        <div class="tip_txt_tri"></div>
+        <div class="tip_txt">亲，摇一摇，还有更多宝物</div>
+    </div>
+</div>
+
+<div class="pop hide">
+    <div class="pop_c">
+        <!--中奖-->
+        <!--<div class="pop_s">-->
+            <!--<div class="s_title">-->
+                <!--<h4>发现红包！</h4>-->
+                <!--<h6>放到我的“卡券包”</h6>-->
+            <!--</div>-->
+            <!--<div class="s_content">-->
+                <!--<div class="s_c_val">{%=o.raffleType%}</div>-->
+                <!--<div class="s_c_tip">（适用于生活服务类商品）</div>-->
+            <!--</div>-->
+            <!--<div class="s_bottom">-->
+                <!--<div class="s_share">分享</div>-->
+                <!--<div class="s_seek">寻宝</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="pop_bond">-->
+        <!--</div>-->
+
+        <!--未中奖-->
+        <div class="pop_miss">
+            <div class="miss_title">
+                <h5>宝物被别人挖走了</h5>
+                <h6>没关系，他家还有其他券哝～</h6>
+            </div>
+            <div class="miss_content">
+                <a class="content">
+                    <div class="c_img">
+                        <img src="images/item.png">
+                    </div>
+                    <div class="c_info">
+                        <div class="c_info_shop">{%=o.shopName%}</div>
+                        <div class="c_info_item">{%=o.itemTitle%}</div>
+                        <div class="c_info_deals">{%=o.address}</div>
+                    </div>
+                </a>
+            </div>
+            <div class="miss_bottom">
+                <div class="miss_seek">寻宝</div>
+            </div>
+        </div>
+        <div class="pop_cry">
+        </div>
+
+        <!--纯文字对话框-->
+        <!--<div class="pop_static">-->
+            <!--<div class="static_title">-->
+                <!--亲!-->
+            <!--</div>-->
+            <!--<div class="static_content">-->
+                <!--你所在的地方没有宝物哦， 换个热闹的地方看看！-->
+            <!--</div>-->
+            <!--<div class="static_bottom">-->
+                <!--<div class="static_see">去看看</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+</div>
+
+<div class="m_load hide">
+    <div class="load_img">
+        <div class="load_ball">
+
+        </div>
+        <div class="load_tip">
+            想要发现身边的宝物。 <br>请先将手机定位服务开启哦！<br><br>(建议在WIFI情况下打开)
+        </div>
+    </div>
+</div>
+
+
+<div id="start" style="color: white; position: absolute; background-color: red; z-index: 900; height: 30px; font-size: 12px; line-height: 30px; width: 50px; text-align: center;">
+    开始寻宝
+</div>
+
+</body>
+
+<script>
+
+    var isBoot = false;
+
+    var el = document.querySelector('#start');
+    el.onclick = function(){
+        if(!isBoot){
+            el.innerText = '退出寻宝';
+            Game.Boot(
+                {
+                    userId: ''
+                }
+            );
+            isBoot = true;
+        }
+        else{
+            el.innerText = '继续寻宝';
+            Game.destroy();
+            isBoot = false;
+        }
+    };
+
+</script>
+
+</html>

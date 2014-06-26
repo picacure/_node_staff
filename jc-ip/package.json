@@ -1,0 +1,26 @@
+{
+	"name": "jc-ip",
+	"version": "0.0.4",
+	"description": "get localhost ip and copy it to clipboard",
+	"main": "index.js",
+	"scripts": {
+		"test": "jc-ip"
+	},
+	"bin": {
+		"jc-ip": "./bin/init.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/picacure/_node_staff.git"
+	},
+	"keywords": [
+		"localhost",
+		"ip"
+	],
+	"author": "jiangcheng.wxd",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/picacure/_node_staff/issues"
+	},
+	"homepage": "https://github.com/picacure/_node_staff"
+}

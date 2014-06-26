@@ -1,0 +1,41 @@
+{
+    "name": "icreate",
+    "version": "0.0.6",
+    "description": "A command-line tool for creating all icons and launch-screen images of iOS App. by@大城小胖",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "iCreate": "./bin/init.js"
+    },
+    "keywords": [
+        "A command-line tool for creating all icons and launch-screen images of iOS App.",
+        ""
+    ],
+	"homepage": "https://github.com/picacure/_node_staff",
+	"author": {
+		"name": "jiangcheng.wxd",
+		"email": "jiangcheng.wxd@taobao.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/picacure/_node_staff.git"
+	},
+	"bugs": {
+		"url": "https://github.com/picacure/_node_staff/issues"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://github.com/picacure/_node_staff/blob/master/LICENSE-MIT"
+		}
+	],
+    "dependencies": {
+    },
+	"engines": {
+		"node": ">= 1.1.0"
+	},
+    "readmeFilename": "readme.md",
+    "_id": "icreate@0.0.6",
+    "_from": "icreate"
+}

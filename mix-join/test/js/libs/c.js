@@ -1,1 +1,1 @@
-js/libs/c.js
+js / libs / c.js

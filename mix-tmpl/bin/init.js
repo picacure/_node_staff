@@ -2,6 +2,6 @@
 
 
 var join = require('../libs/main')
-					;
+    ;
 
 join(process.cwd());

@@ -1,103 +1,120 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: "微软雅黑";
+    margin: 0;
+    padding: 0;
+    font-family: "微软雅黑";
 }
+
 #wrapper {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
 }
+
 #wrapper .mbox {
-  text-align: center;
-  font-size: 24px;
-  height: 100%;
+    text-align: center;
+    font-size: 24px;
+    height: 100%;
 }
+
 #wrapper .mbox .txt {
-  height: 50px;
-  line-height: 50px;
+    height: 50px;
+    line-height: 50px;
 }
+
 #wrapper .mbox .mID {
-  height: 200px;
-  font-size: 30px;
-  font-weight: bolder;
-  color: red;
+    height: 200px;
+    font-size: 30px;
+    font-weight: bolder;
+    color: red;
 }
+
 #wrapper .mbox .console {
-  display: none;
-  margin-top: 100px;
-  text-align: center;
-  height: 40px;
-  width: 300px;
-  background-color: #AEBDCC;
+    display: none;
+    margin-top: 100px;
+    text-align: center;
+    height: 40px;
+    width: 300px;
+    background-color: #AEBDCC;
 }
+
 #wrapper .H5 {
-  background: url('../images/Lv1.png') no-repeat;
-  background-size: contain;
-  background-position: bottom;
+    background: url('../images/Lv1.png') no-repeat;
+    background-size: contain;
+    background-position: bottom;
 }
+
 #wrapper .IOS {
-  background: url('../images/Lv2.png') no-repeat;
-  background-size: contain;
-  background-position: bottom;
+    background: url('../images/Lv2.png') no-repeat;
+    background-size: contain;
+    background-position: bottom;
 }
+
 #myCanvas {
-  width: 500px;
-  height: 500px;
-  border: red 1px solid;
+    width: 500px;
+    height: 500px;
+    border: red 1px solid;
 }
+
 #output {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  text-align: center;
-  background: #000;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    text-align: center;
+    background: #000;
 }
+
 #output .tip {
-  margin-top: 20px;
-  color: white;
-  font-size: 24px;
-  height: 30px;
+    margin-top: 20px;
+    color: white;
+    font-size: 24px;
+    height: 30px;
 }
+
 #output .board {
-  display: inline-block;
-  position: relative;
-  background: #CCC;
-  border: 10px solid grey;
-  margin-top: 20px;
+    display: inline-block;
+    position: relative;
+    background: #CCC;
+    border: 10px solid grey;
+    margin-top: 20px;
 }
+
 #output .board .mQrCode {
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  border: 5px solid yellowgreen;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    border: 5px solid yellowgreen;
 }
+
 #output .board .lao {
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
 }
+
 #output .board .lao img {
-  width: 200px;
-  height: 200px;
-  display: inline-block;
+    width: 200px;
+    height: 200px;
+    display: inline-block;
 }
+
 #output .board .lao img::before {
-  display: block;
-  font-size: 100px;
-  position: absolute;
-  content: '好';
+    display: block;
+    font-size: 100px;
+    position: absolute;
+    content: '好';
 }
+
 #output .board .lao img::after {
-  display: block;
-  font-size: 100px;
-  position: absolute;
-  content: '棒';
+    display: block;
+    font-size: 100px;
+    position: absolute;
+    content: '棒';
 }
+
 #output .board + .board {
-  margin-left: 50px;
+    margin-left: 50px;
 }

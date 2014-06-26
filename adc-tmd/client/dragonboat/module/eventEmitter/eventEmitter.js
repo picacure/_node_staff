@@ -14,7 +14,8 @@
      *
      * @class Manages event registering and emitting.
      */
-    function EventEmitter() {}
+    function EventEmitter() {
+    }
 
     // Shortcuts to improve speed and size
 
@@ -159,8 +160,7 @@
      * @param {String[]} evts An array of event names to define.
      * @return {Object} Current instance of EventEmitter for chaining.
      */
-    proto.defineEvents = function (evts)
-    {
+    proto.defineEvents = function (evts) {
         for (var i = 0; i < evts.length; i += 1) {
             this.defineEvent(evts[i]);
         }

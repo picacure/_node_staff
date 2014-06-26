@@ -4,14 +4,14 @@
 
     var list = $('.list');
 
-    for(var i = 0,len = archives.length; i < len;i++){
+    for (var i = 0, len = archives.length; i < len; i++) {
         var dir = 'data/' + archives.eq(i).text();
 
-        (function(date){
-            $.get(dir,function(response){
+        (function (date) {
+            $.get(dir, function (response) {
                 var data = response;
                 data.date = date;
-                var dom =  new EJS({url:'views/view.ejs'}).render(data);
+                var dom = new EJS({url: 'views/view.ejs'}).render(data);
 
                 list.append(dom);
             });
@@ -19,7 +19,7 @@
 
     }
 
-    $(document).on('click','.date',function(){
+    $(document).on('click', '.date', function () {
         $(this).parent().siblings().toggleClass('hide');
     });
 

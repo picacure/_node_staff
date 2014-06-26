@@ -26,35 +26,34 @@
 <script>
 
 
-
     var Init_Params = {
         CurveX: 468,
-        CurveY : 363,
+        CurveY: 363,
 
-        CurveXEnd : 92,
-        CurveYEnd : 179,
+        CurveXEnd: 92,
+        CurveYEnd: 179,
 
 
-        CurveOneX : 477,
-        CurveOneY : 212,
+        CurveOneX: 477,
+        CurveOneY: 212,
 
-        CurveOneXEnd : 402,
-        CurveOneYEnd : 160,
+        CurveOneXEnd: 402,
+        CurveOneYEnd: 160,
 
         LineGrowStep: 0.5,
 
-        BaseLineWidth : 10
+        BaseLineWidth: 10
     };
 
     var Line_Params = {
 
         //贝塞尔曲线.
-        CurveOneX : Init_Params.CurveOneX,
-        CurveOneY : Init_Params.CurveOneY,
+        CurveOneX: Init_Params.CurveOneX,
+        CurveOneY: Init_Params.CurveOneY,
 
         //结束位置(一个坐标即可).
-        CurveOneXEnd : Init_Params.CurveOneXEnd,
-        CurveOneYEnd : Init_Params.CurveOneYEnd,
+        CurveOneXEnd: Init_Params.CurveOneXEnd,
+        CurveOneYEnd: Init_Params.CurveOneYEnd,
 
         CurveTwoX: 486,
         CurveTwoY: 156,
@@ -62,20 +61,19 @@
         CurveThreeY: 152,
 
         //初始位置
-        CurveX : Init_Params.CurveX,
-        CurveY : Init_Params.CurveY,
+        CurveX: Init_Params.CurveX,
+        CurveY: Init_Params.CurveY,
 
-        CurveXEnd : Init_Params.CurveXEnd,
-        CurveYEnd : Init_Params.CurveYEnd,
+        CurveXEnd: Init_Params.CurveXEnd,
+        CurveYEnd: Init_Params.CurveYEnd,
 
 
-        BaseLineWidth : 6,
+        BaseLineWidth: 6,
         StrokeStyle: '#333'
     };
 
 
-
-    function Curve(){
+    function Curve() {
         this.canvas = document.getElementById("cOne");
         this.ctx = this.canvas.getContext("2d");
         this.ctx.lineWidth = Line_Params.BaseLineWidth;
@@ -88,24 +86,24 @@
 
     Curve.prototype = {
         constructor: Curve,
-        grow:function(step){
+        grow: function (step) {
             var _self = this;
 
-            if(step){
+            if (step) {
 
                 //中间弧线的速度幅度变化小.
-                if(Line_Params.CurveOneX > Line_Params.CurveOneXEnd){
+                if (Line_Params.CurveOneX > Line_Params.CurveOneXEnd) {
                     Line_Params.CurveOneX -= 20;
                     Line_Params.CurveOneY = _self.CurveOne(Line_Params.CurveOneX);
                 }
 
                 Line_Params.CurveX -= 25;
-                if(Line_Params.CurveX > Line_Params.CurveXEnd){
+                if (Line_Params.CurveX > Line_Params.CurveXEnd) {
                     Line_Params.CurveY = _self.CurveStart(Line_Params.CurveX);
 
                     Line_Params.BaseLineWidth += step;
                 }
-                else{
+                else {
 
 //                    Line_Params.CurveX = Init_Params.CurveX;
 //                    Line_Params.CurveY = Init_Params.CurveY;
@@ -123,21 +121,21 @@
                 _self.ctx.bezierCurveTo(Line_Params.CurveOneX, Line_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
                 _self.ctx.stroke();
             }
-            else{
+            else {
 
                 //中间弧线的速度幅度变化小.
-                if(Line_Params.CurveOneX > Line_Params.CurveOneXEnd){
+                if (Line_Params.CurveOneX > Line_Params.CurveOneXEnd) {
                     Line_Params.CurveOneX = Line_Params.CurveOneX - 2;
                     Line_Params.CurveOneY = _self.CurveOne(Line_Params.CurveOneX);
                 }
 
                 Line_Params.CurveX -= 5;
-                if(Line_Params.CurveX > Line_Params.CurveXEnd){
+                if (Line_Params.CurveX > Line_Params.CurveXEnd) {
                     Line_Params.CurveY = _self.CurveStart(Line_Params.CurveX);
 
                     Line_Params.BaseLineWidth += Init_Params.LineGrowStep;
                 }
-                else{
+                else {
 //                    Line_Params.CurveX = Init_Params.CurveX;
 //                    Line_Params.CurveY = Init_Params.CurveY;
 //
@@ -156,13 +154,13 @@
             }
 
         },
-        reset: function(){
+        reset: function () {
             Line_Params.CurveX = Init_Params.CurveX;
             Line_Params.CurveY = Init_Params.CurveY;
 
             Line_Params.CurveOneX = Init_Params.CurveOneX,
-            Line_Params.CurveOneY = Init_Params.CurveOneY,
-            Line_Params.BaseLineWidth = Init_Params.BaseLineWidth;
+                    Line_Params.CurveOneY = Init_Params.CurveOneY,
+                    Line_Params.BaseLineWidth = Init_Params.BaseLineWidth;
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.lineWidth = Line_Params.BaseLineWidth;
@@ -172,15 +170,14 @@
             this.ctx.bezierCurveTo(Init_Params.CurveOneX, Init_Params.CurveOneY, Line_Params.CurveTwoX, Line_Params.CurveTwoY, Line_Params.CurveThreeX, Line_Params.CurveThreeY);
             this.ctx.stroke();
         },
-        CurveOne: function(x){
-            return (Init_Params.CurveOneY - Init_Params.CurveOneYEnd)/(Init_Params.CurveOneX - Init_Params.CurveOneXEnd) * x +
-                    (Init_Params.CurveOneYEnd - Init_Params.CurveOneXEnd * (Init_Params.CurveOneY - Init_Params.CurveOneYEnd)/(Init_Params.CurveOneX - Init_Params.CurveOneXEnd));
+        CurveOne: function (x) {
+            return (Init_Params.CurveOneY - Init_Params.CurveOneYEnd) / (Init_Params.CurveOneX - Init_Params.CurveOneXEnd) * x +
+                    (Init_Params.CurveOneYEnd - Init_Params.CurveOneXEnd * (Init_Params.CurveOneY - Init_Params.CurveOneYEnd) / (Init_Params.CurveOneX - Init_Params.CurveOneXEnd));
         },
-        CurveStart: function(x){
-            return (Init_Params.CurveY - Init_Params.CurveYEnd)/(Init_Params.CurveX - Init_Params.CurveXEnd) * x + (Init_Params.CurveYEnd - Init_Params.CurveXEnd * (Init_Params.CurveY - Init_Params.CurveYEnd)/(Init_Params.CurveX - Init_Params.CurveXEnd));
+        CurveStart: function (x) {
+            return (Init_Params.CurveY - Init_Params.CurveYEnd) / (Init_Params.CurveX - Init_Params.CurveXEnd) * x + (Init_Params.CurveYEnd - Init_Params.CurveXEnd * (Init_Params.CurveY - Init_Params.CurveYEnd) / (Init_Params.CurveX - Init_Params.CurveXEnd));
         }
     }
-
 
 
 </script>

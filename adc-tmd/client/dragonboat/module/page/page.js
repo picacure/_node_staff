@@ -1,5 +1,5 @@
 ;
-(function() {
+(function () {
 
     /**
      * Perform initial dispatch.
@@ -69,7 +69,7 @@
      * @api public
      */
 
-    page.base = function(path) {
+    page.base = function (path) {
         if (0 == arguments.length) return base;
         base = path;
     };
@@ -87,7 +87,7 @@
      * @api public
      */
 
-    page.start = function(options) {
+    page.start = function (options) {
         options = options || {};
         if (running) return;
         running = true;
@@ -104,7 +104,7 @@
      * @api public
      */
 
-    page.stop = function() {
+    page.stop = function () {
         running = false;
         removeEventListener('click', onclick, false);
         removeEventListener('popstate', onpopstate, false);
@@ -120,7 +120,7 @@
      * @api public
      */
 
-    page.show = function(path, state, dispatch) {
+    page.show = function (path, state, dispatch) {
         var ctx = new Context(path, state);
         if (false !== dispatch) page.dispatch(ctx);
         if (!ctx.unhandled) ctx.pushState();
@@ -136,7 +136,7 @@
      * @api public
      */
 
-    page.replace = function(path, state, init, dispatch) {
+    page.replace = function (path, state, init, dispatch) {
         var ctx = new Context(path, state);
         ctx.init = init;
         if (null == dispatch) dispatch = true;
@@ -152,7 +152,7 @@
      * @api private
      */
 
-    page.dispatch = function(ctx) {
+    page.dispatch = function (ctx) {
         var i = 0;
 
         function next() {
@@ -214,7 +214,7 @@
      * @api private
      */
 
-    Context.prototype.pushState = function() {
+    Context.prototype.pushState = function () {
         history.pushState(this.state, this.title, this.canonicalPath);
     };
 
@@ -224,7 +224,7 @@
      * @api public
      */
 
-    Context.prototype.save = function() {
+    Context.prototype.save = function () {
         history.replaceState(this.state, this.title, this.canonicalPath);
     };
 
@@ -264,9 +264,9 @@
      * @api public
      */
 
-    Route.prototype.middleware = function(fn) {
+    Route.prototype.middleware = function (fn) {
         var self = this;
-        return function(ctx, next) {
+        return function (ctx, next) {
             if (self.match(ctx.path, ctx.params)) return fn(ctx, next);
             next();
         }
@@ -282,7 +282,7 @@
      * @api private
      */
 
-    Route.prototype.match = function(path, params) {
+    Route.prototype.match = function (path, params) {
         var keys = this.keys,
             qsIndex = path.indexOf('?'),
             pathname = ~qsIndex ? path.slice(0, qsIndex) : path,
@@ -325,10 +325,10 @@
     function pathtoRegexp(path, keys, sensitive, strict) {
         if (path instanceof RegExp) return path;
         if (path instanceof Array) path = '(' + path.join('|') + ')';
-        path = path.concat(strict ? '' : '/?').replace(/\/\(/g, '(?:/').replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, function(_, slash, format, key, capture, optional) {
+        path = path.concat(strict ? '' : '/?').replace(/\/\(/g, '(?:/').replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g,function (_, slash, format, key, capture, optional) {
             keys.push({
                 name: key,
-                optional: !! optional
+                optional: !!optional
             });
             slash = slash || '';
             return '' + (optional ? '' : slash) + '(?:' + (optional ? slash : '') + (format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')' + (optional || '');

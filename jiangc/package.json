@@ -1,25 +1,25 @@
 {
-  "name": "jiangc",
-  "version": "0.0.2",
-  "description": "a test packge",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bin": {
-    "jiangc": "./bin/init.js"
-  },
-  "repository": "",
-  "keywords": [
-    "test",
-    ""
-  ],
-  "author": {
-    "name": "JiangC"
-  },
-  "license": "BSD",
-  "readme": "just for npm test",
-  "readmeFilename": "readme.txt",
-  "_id": "jiangc@0.0.2",
-  "_from": "jiangc"
+    "name": "jiangc",
+    "version": "0.0.2",
+    "description": "a test packge",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "jiangc": "./bin/init.js"
+    },
+    "repository": "",
+    "keywords": [
+        "test",
+        ""
+    ],
+    "author": {
+        "name": "JiangC"
+    },
+    "license": "BSD",
+    "readme": "just for npm test",
+    "readmeFilename": "readme.txt",
+    "_id": "jiangc@0.0.2",
+    "_from": "jiangc"
 }

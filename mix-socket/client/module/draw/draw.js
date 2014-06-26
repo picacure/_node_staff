@@ -1,11 +1,11 @@
 //画图组件. by jiangC
-(function(){
-    var draw = function(domId,options){
+(function () {
+    var draw = function (domId, options) {
         var myCanvas = document.createElement('canvas'),
             wrapper = document.getElementById(domId)
             ;
 
-        myCanvas.style.width = window.getComputedStyle(wrapper).width || '700px' ;
+        myCanvas.style.width = window.getComputedStyle(wrapper).width || '700px';
         myCanvas.style.height = (options.height || 200) + 'px';
 
         this.canvas = myCanvas;
@@ -16,8 +16,8 @@
 
         this.line = [
             {
-                x:0,
-                y:0
+                x: 0,
+                y: 0
             }
         ]
 
@@ -29,8 +29,8 @@
         wrapper.appendChild(myCanvas);
     };
 
-    draw.prototype.drawLine = function(xV,yV){
-        if(this.isHide) return;
+    draw.prototype.drawLine = function (xV, yV) {
+        if (this.isHide) return;
 
         var len = this.line.length - 1;
 
@@ -47,20 +47,20 @@
         this.context.stroke();
 
         this.line.push({
-            x:xV,
-            y:yV
+            x: xV,
+            y: yV
         });
     };
 
     //画成组的线.
-    draw.prototype.drawLines = function(points){
-        if(this.isHide) return;
+    draw.prototype.drawLines = function (points) {
+        if (this.isHide) return;
 
         //解决clearRect失效的问题 http://stackoverflow.com/questions/9743027/clearrect-not-working
         this.context.beginPath();
 
 
-        for(var i = 0,len = points.length; i < len - 1; i++){
+        for (var i = 0, len = points.length; i < len - 1; i++) {
             this.context.lineWidth = 1;
             this.context.strokeStyle = this.color;
             this.context.moveTo(points[i].x, points[i].y);
@@ -69,28 +69,28 @@
         }
     };
 
-    draw.prototype.hide = function(){
+    draw.prototype.hide = function () {
         this.isHide = true;
     };
 
-    draw.prototype.show = function(){
+    draw.prototype.show = function () {
         this.isHide = false;
     };
 
-    draw.prototype.size = function(){
+    draw.prototype.size = function () {
         return {
             width: this.canvas.width,
             height: this.canvas.height
         }
     };
 
-    draw.prototype.reset = function(){
+    draw.prototype.reset = function () {
 
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.line = [
             {
-                x:0,
-                y:0
+                x: 0,
+                y: 0
             }
         ]
     }

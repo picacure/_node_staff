@@ -1,25 +1,25 @@
-(function(win, undef) {
+(function (win, undef) {
     var doc = win.document,
         hasOwnProperty = Object.prototype.hasOwnProperty,
         WindVane = win.WindVane || (win.WindVane = {}),
         WindVane_Native = win.WindVane_Native,
         callbackMap = {},
         iframePool = [], iframeLimit = 3,
-   
+
         WV_Data = {
             LOCAL_PROTOCOL: 'hybrid',
             KV_SPLIT: '=',
             PARAM_SPLIT: '&',
             MSG_TIMEOUT: 'TIMEOUT'
         },
-   
+
         WV_Core = {
-            call: function(obj, method, param, successCallback, failureCallback, timeout) {
+            call: function (obj, method, param, successCallback, failureCallback, timeout) {
                 var sid;
 
                 if (timeout > 0) {
-                    sid = setTimeout(function() {
-                        WV_Core.onFailure(sid, {ret:WV_Data.MSG_TIMEOUT});
+                    sid = setTimeout(function () {
+                        WV_Core.onFailure(sid, {ret: WV_Data.MSG_TIMEOUT});
                     }, timeout);
                 } else {
                     sid = WV_Private.getSid();
@@ -33,8 +33,8 @@
                     WV_Private.callMethod(obj, method, WV_Private.buildParam(param), sid + '');
                 }
             },
-       
-            fireEvent: function(eventname, eventparam) {
+
+            fireEvent: function (eventname, eventparam) {
                 var ev = doc.createEvent('HTMLEvents');
                 ev.initEvent(eventname, false, true);
                 ev.param = WV_Private.parseParam(eventparam);
@@ -42,11 +42,11 @@
             },
 
             // {ret:'SUCCESS', value:{'a':1}}
-            onSuccess: function(sid, msg) {
+            onSuccess: function (sid, msg) {
                 clearTimeout(sid);
                 var func = WV_Private.unregisterCall(sid).success,
                     param = WV_Private.parseParam(msg);
-                
+
                 func && func(param.value || param);
 
                 if (WindVane_Native && WindVane_Native.onComplete) {
@@ -58,13 +58,13 @@
 
 
             // {ret:'FAILURE', value:{'a':1}}
-            onFailure: function(sid, msg) {
+            onFailure: function (sid, msg) {
                 clearTimeout(sid);
                 var func = WV_Private.unregisterCall(sid).failure,
                     param = WV_Private.parseParam(msg);
 
                 func && func(param.value || param);
-                
+
                 if (WindVane_Native && WindVane_Native.onComplete) {
                     WindVane_Native.onComplete(sid);
                 } else {
@@ -72,11 +72,11 @@
                 }
             }
         },
-   
+
         WV_Private = {
             //ifUseIframe: false,
 
-            buildParam: function(obj) {
+            buildParam: function (obj) {
                 if (obj && typeof obj === 'object') {
                     return JSON.stringify(obj);
                 } else {
@@ -84,11 +84,11 @@
                 }
             },
 
-            parseParam: function(str) {
+            parseParam: function (str) {
                 if (str && typeof str === 'string') {
                     try {
                         obj = JSON.parse(str);
-                    } catch(e) {
+                    } catch (e) {
                         obj = eval('(' + str + ')');
                     }
                 } else {
@@ -98,47 +98,47 @@
                 return obj;
             },
 
-            getSid: function() {
+            getSid: function () {
                 return Math.floor(Math.random() * (1 << 50));
             },
-       
-            getIframeId: function(sid) {
+
+            getIframeId: function (sid) {
                 return 'iframe_' + sid;
             },
 
-            getSuccessId: function(sid) {
+            getSuccessId: function (sid) {
                 return 'suc' + sid;
             },
-       
-            getFailedId: function(sid) {
+
+            getFailedId: function (sid) {
                 return 'err_' + sid;
             },
-       
-            registerCall: function(sid, successCallback, failedCallback) {
+
+            registerCall: function (sid, successCallback, failedCallback) {
                 if (successCallback) {
                     callbackMap[this.getSuccessId(sid)] = successCallback;
                 }
-       
+
                 if (failedCallback) {
                     callbackMap[this.getFailedId(sid)] = failedCallback;
                 }
             },
-       
-            unregisterCall: function(sid) {
+
+            unregisterCall: function (sid) {
                 var sucId = this.getSuccessId(sid),
                     failId = this.getFailedId(sid)
-                    call = {
-                        success: callbackMap[sucId],
-                        failure: callbackMap[failId]
-                    }
-                    ;
+                call = {
+                    success: callbackMap[sucId],
+                    failure: callbackMap[failId]
+                }
+                ;
 
                 delete callbackMap[sucId];
                 delete callbackMap[failId];
                 return call;
             },
 
-            useIframe: function(sid, url) {
+            useIframe: function (sid, url) {
                 //this.ifUseIframe || (this.ifUseIframe = true);
 
                 var iframeid = this.getIframeId(sid),
@@ -155,13 +155,13 @@
                 iframe.setAttribute('src', url);
 
                 if (!iframe.parentNode) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         doc.body.appendChild(iframe);
-                    },5);
+                    }, 5);
                 }
             },
 
-            retrieveIframe : function(sid) {
+            retrieveIframe: function (sid) {
                 //if (!this.ifUseIframe) return;
 
                 var iframeid = this.getIframeId(sid),
@@ -175,13 +175,13 @@
                 }
             },
 
-            callMethod: function(obj, method, param, sid) {
+            callMethod: function (obj, method, param, sid) {
                 // [for protocol] hybrid://objectName:sid/methodName?{a:'b',c:'d'}
                 var src = WV_Data.LOCAL_PROTOCOL + '://' + obj + ':' + sid + '/' + method + '?' + param;
                 this.useIframe(sid, src);
             },
 
-            onComplete: function(sid) {
+            onComplete: function (sid) {
                 this.retrieveIframe(sid);
             }
         }

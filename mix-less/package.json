@@ -1,26 +1,26 @@
 {
-  "name": "mix-less",
-  "version": "0.0.1",
-  "description": "simple less helper",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bin": {
-    "mix-less": "./bin/init.js"
-  },
-  "repository": "",
-  "keywords": [
-    "simple less helper",
-    ""
-  ],
-  "author": {
-    "name": "JiangC"
-  },
-  "dependencies": {
-  },
-  "license": "BSD",
-  "readme": "simple less helper",
-  "readmeFilename": "readme.txt",
-  "_id": "mix-less@0.0.1",
-  "_from": "mix-less"
+    "name": "mix-less",
+    "version": "0.0.1",
+    "description": "simple less helper",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "mix-less": "./bin/init.js"
+    },
+    "repository": "",
+    "keywords": [
+        "simple less helper",
+        ""
+    ],
+    "author": {
+        "name": "JiangC"
+    },
+    "dependencies": {
+    },
+    "license": "BSD",
+    "readme": "simple less helper",
+    "readmeFilename": "readme.txt",
+    "_id": "mix-less@0.0.1",
+    "_from": "mix-less"
 }

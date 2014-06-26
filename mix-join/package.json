@@ -1,26 +1,26 @@
 {
-  "name": "mix-join",
-  "version": "0.0.2",
-  "description": "simple join js file together",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bin": {
-    "mix-join": "./bin/init.js"
-  },
-  "repository": "",
-  "keywords": [
-    "join js file simple",
-    ""
-  ],
-  "author": {
-    "name": "JiangC"
-  },
-  "dependencies": {
-  },
-  "license": "BSD",
-  "readme": "simple join js file together ",
-  "readmeFilename": "readme.txt",
-  "_id": "mix-join@0.0.2",
-  "_from": "mix-join"
+    "name": "mix-join",
+    "version": "0.0.2",
+    "description": "simple join js file together",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "mix-join": "./bin/init.js"
+    },
+    "repository": "",
+    "keywords": [
+        "join js file simple",
+        ""
+    ],
+    "author": {
+        "name": "JiangC"
+    },
+    "dependencies": {
+    },
+    "license": "BSD",
+    "readme": "simple join js file together ",
+    "readmeFilename": "readme.txt",
+    "_id": "mix-join@0.0.2",
+    "_from": "mix-join"
 }

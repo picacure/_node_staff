@@ -12,7 +12,7 @@ server.listen(8181);
 
 io.configure(function () {
     io.set('log level', 0);
-    io.set('transports', ['websocket','xhr-polling','jsonp-polling','htmlfile']);
+    io.set('transports', ['websocket', 'xhr-polling', 'jsonp-polling', 'htmlfile']);
     /*
      io.set('transports', ['websocket',
      'xhr-polling',
@@ -25,7 +25,6 @@ io.configure(function () {
 app.get('/', function (req, res) {
 
 });
-
 
 
 var pcSocket,
@@ -46,13 +45,13 @@ io.sockets.on('connection', function (socket) {
     socket.on(MSG_TYPE.M_CONNECT_REQ, function (data) {
         console.log('M端接入');
         //确认token串.
-        if(TokenArr.contains(data.Token)){
+        if (TokenArr.contains(data.Token)) {
             MSocket.push(socket);
             socket.emit(MSG_TYPE.M_TOKEN_OK, {});
 
             TokenArr.remByVal(data.Token);
 
-            if(pcSocket){
+            if (pcSocket) {
                 //部分接入.
                 pcSocket.emit(MSG_TYPE.PC_M_CONNECT_RES, data);
 
@@ -60,7 +59,7 @@ io.sockets.on('connection', function (socket) {
             }
         }
         //失效Token.
-        else{
+        else {
             socket.emit(MSG_TYPE.M_TOKEN_INVALID, {});
         }
     });
@@ -69,7 +68,7 @@ io.sockets.on('connection', function (socket) {
     //M端晃动数据.
     socket.on(MSG_TYPE.M_SHAKE_REQ, function (data) {
         console.log(socket);
-        if(pcSocket){
+        if (pcSocket) {
             pcSocket.emit(MSG_TYPE.PC_SHAKE_RES, data);
         }
     });

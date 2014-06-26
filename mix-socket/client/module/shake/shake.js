@@ -7,7 +7,7 @@
  * Released under MIT license
  *
  */
-(function(factory) {
+(function (factory) {
     if (window['define'] == undefined) {
         var module = {},
             exports = module.exports = {}
@@ -17,7 +17,7 @@
     } else {
         define(factory);
     }
-})(function(require,exports,module){
+})(function (require, exports, module) {
 
     function Shake() {
 
@@ -56,13 +56,17 @@
     Shake.prototype.start = function () {
 
         this.reset();
-        if (this.hasDeviceMotion) { window.addEventListener('devicemotion', this, false); }
+        if (this.hasDeviceMotion) {
+            window.addEventListener('devicemotion', this, false);
+        }
     };
 
     //stop listening for devicemotion
     Shake.prototype.stop = function () {
 
-        if (this.hasDeviceMotion) { window.removeEventListener('devicemotion', this, false); }
+        if (this.hasDeviceMotion) {
+            window.removeEventListener('devicemotion', this, false);
+        }
         this.reset();
     };
 
@@ -76,11 +80,11 @@
             deltaY = 0,
             deltaZ = 0;
 
-        if(e.acceleration){
+        if (e.acceleration) {
             this.threshold = 0;
         }
-        else{
-            if(e.accelerationIncludingGravity){
+        else {
+            if (e.accelerationIncludingGravity) {
                 this.threshold = 0;
             }
         }
@@ -118,7 +122,7 @@
             this.event.deltaX = current.x;
             this.event.deltaY = current.y;
             this.event.deltaZ = current.z;
-            this.event.absXYZ = getAbsolute(current.x,current.y,current.z);
+            this.event.absXYZ = getAbsolute(current.x, current.y, current.z);
             this.event.shakeTimes = this.shakeTimes;
             window.dispatchEvent(this.event);
             this.shakeTimes = 0;
@@ -127,7 +131,7 @@
     };
 
     //拟合算子.
-    function getAbsolute(x,y,z){
+    function getAbsolute(x, y, z) {
         return (x + y + z);
     };
 

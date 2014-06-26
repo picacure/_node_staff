@@ -1,1 +1,1 @@
-js/b.js
+js / b.js

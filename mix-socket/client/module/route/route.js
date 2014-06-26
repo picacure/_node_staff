@@ -31,10 +31,10 @@ Router.prototype = {
 
      @param {Function} callback
      */
-    map: function(callback) {
+    map: function (callback) {
         this.recognizer.delegate = this.delegate;
 
-        this.recognizer.map(callback, function(recognizer, route) {
+        this.recognizer.map(callback, function (recognizer, route) {
             var lastHandler = route[route.length - 1].handler;
             var args = [route,
                 {
@@ -44,7 +44,7 @@ Router.prototype = {
         });
     },
 
-    hasRoute: function(route) {
+    hasRoute: function (route) {
         return this.recognizer.hasRoute(route);
     },
 
@@ -53,8 +53,8 @@ Router.prototype = {
      on each of them starting at the leaf and traversing up through
      its ancestors.
      */
-    reset: function() {
-        eachHandler(this.currentHandlerInfos || [], function(handler) {
+    reset: function () {
+        eachHandler(this.currentHandlerInfos || [], function (handler) {
             if (handler.exit) {
                 handler.exit();
             }
@@ -74,7 +74,7 @@ Router.prototype = {
 
      @return {Array} an Array of `[handler, parameter]` tuples
      */
-    handleURL: function(url) {
+    handleURL: function (url) {
         var results = this.recognizer.recognize(url);
 
         if (!results) {
@@ -89,7 +89,7 @@ Router.prototype = {
 
      @param {String} url a URL to update to
      */
-    updateURL: function() {
+    updateURL: function () {
         throw "updateURL is not implemented";
     },
 
@@ -100,7 +100,7 @@ Router.prototype = {
 
      @param {String} url a URL to update to
      */
-    replaceURL: function(url) {
+    replaceURL: function (url) {
         this.updateURL(url);
     },
 
@@ -112,7 +112,7 @@ Router.prototype = {
 
      @param {String} name the name of the route
      */
-    transitionTo: function(name) {
+    transitionTo: function (name) {
         var args = Array.prototype.slice.call(arguments, 1);
         doTransition(this, name, this.updateURL, args);
     },
@@ -125,7 +125,7 @@ Router.prototype = {
 
      @param {String} name the name of the route
      */
-    replaceWith: function(name) {
+    replaceWith: function (name) {
         var args = Array.prototype.slice.call(arguments, 1);
         doTransition(this, name, this.replaceURL, args);
     },
@@ -140,7 +140,7 @@ Router.prototype = {
      @param {Array[Object]} contexts
      @return {Object} a serialized parameter hash
      */
-    paramsForHandler: function(handlerName, callback) {
+    paramsForHandler: function (handlerName, callback) {
         var output = this._paramsForHandler(handlerName, [].slice.call(arguments, 1));
         return output.params;
     },
@@ -155,7 +155,7 @@ Router.prototype = {
 
      @return {String} a URL
      */
-    generate: function(handlerName) {
+    generate: function (handlerName) {
         var params = this.paramsForHandler.apply(this, arguments);
         return this.recognizer.generate(handlerName, params);
     },
@@ -165,7 +165,7 @@ Router.prototype = {
 
      Used internally by `generate` and `transitionTo`.
      */
-    _paramsForHandler: function(handlerName, objects, doUpdate) {
+    _paramsForHandler: function (handlerName, objects, doUpdate) {
         var handlers = this.recognizer.handlersFor(handlerName),
             params = {},
             toSetup = [],
@@ -230,7 +230,7 @@ Router.prototype = {
             }
 
             toSetup.push({
-                isDynamic: !! handlerObj.names.length,
+                isDynamic: !!handlerObj.names.length,
                 name: handlerObj.handler,
                 handler: handler,
                 context: object
@@ -255,7 +255,7 @@ Router.prototype = {
         };
     },
 
-    isActive: function(handlerName) {
+    isActive: function (handlerName) {
         var contexts = [].slice.call(arguments, 1);
 
         var targetHandlerInfos = this.targetHandlerInfos,
@@ -289,7 +289,7 @@ Router.prototype = {
         return contexts.length === 0 && found;
     },
 
-    trigger: function(name) {
+    trigger: function (name) {
         var args = [].slice.call(arguments);
         trigger(this, args);
     }
@@ -440,7 +440,7 @@ function collectObjects(router, results, index, objects) {
         loading(router);
 
         // The chained `then` means that we can also catch errors that happen in `proceed`
-        object.then(proceed).then(null, function(error) {
+        object.then(proceed).then(null, function (error) {
             failure(router, error);
         });
     } else {
@@ -452,12 +452,14 @@ function collectObjects(router, results, index, objects) {
             setContext(handler, object);
         }
 
-        var updatedObjects = objects.concat([{
-            context: value,
-            name: result.handler,
-            handler: router.getHandler(result.handler),
-            isDynamic: result.isDynamic
-        }]);
+        var updatedObjects = objects.concat([
+            {
+                context: value,
+                name: result.handler,
+                handler: router.getHandler(result.handler),
+                isDynamic: result.isDynamic
+            }
+        ]);
         collectObjects(router, results, index + 1, updatedObjects);
     }
 }
@@ -508,7 +510,7 @@ function setupContexts(router, handlerInfos) {
 
     router.targetHandlerInfos = handlerInfos;
 
-    eachHandler(partition.exited, function(handler, context) {
+    eachHandler(partition.exited, function (handler, context) {
         delete handler.context;
         if (handler.exit) {
             handler.exit();
@@ -518,7 +520,7 @@ function setupContexts(router, handlerInfos) {
     var currentHandlerInfos = partition.unchanged.slice();
     router.currentHandlerInfos = currentHandlerInfos;
 
-    eachHandler(partition.updatedContext, function(handler, context, handlerInfo) {
+    eachHandler(partition.updatedContext, function (handler, context, handlerInfo) {
         setContext(handler, context);
         if (handler.setup) {
             handler.setup(context);
@@ -527,7 +529,7 @@ function setupContexts(router, handlerInfos) {
     });
 
     var aborted = false;
-    eachHandler(partition.entered, function(handler, context, handlerInfo) {
+    eachHandler(partition.entered, function (handler, context, handlerInfo) {
         if (aborted) {
             return;
         }

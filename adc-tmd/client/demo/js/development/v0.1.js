@@ -1,23 +1,23 @@
-(function ($,window) {
+(function ($, window) {
 
     //框架基本消息.
     var FRM_MSG = {
-        M_CONNECT_REQ:'M_CONNECT_REQ',
-        M_CONNECT_RES:'M_CONNECT_RES',
+        M_CONNECT_REQ: 'M_CONNECT_REQ',
+        M_CONNECT_RES: 'M_CONNECT_RES',
 
-        M_TOKEN_INVALID:'M_TOKEN_INVALID',
-        M_TOKEN_OK:'M_TOKEN_OK',
+        M_TOKEN_INVALID: 'M_TOKEN_INVALID',
+        M_TOKEN_OK: 'M_TOKEN_OK',
 
-        PC_CONNECT_REQ:'PC_CONNECT_REQ',
-        PC_M_CONNECT_RES:'PC_M_CONNECT_RES'
+        PC_CONNECT_REQ: 'PC_CONNECT_REQ',
+        PC_M_CONNECT_RES: 'PC_M_CONNECT_RES'
     };
 
     var CUSTOMER_MSG = {
-        M_SHAKE_INIT:'M_SHAKE_INIT',     //PC通知M端开始摇晃.
-        M_SHAKE_REQ:'M_SHAKE_REQ',
-        M_SHAKE_RES:'M_SHAKE_RES',
+        M_SHAKE_INIT: 'M_SHAKE_INIT',     //PC通知M端开始摇晃.
+        M_SHAKE_REQ: 'M_SHAKE_REQ',
+        M_SHAKE_RES: 'M_SHAKE_RES',
 
-        PC_SHAKE_RES:'PC_SHAKE_RES'
+        PC_SHAKE_RES: 'PC_SHAKE_RES'
     };
 
     var GAME_MSG = {
@@ -36,14 +36,14 @@
     var myEvent = new EventEmitter()
         ;
 
-    myEvent.addListener(GAME_MSG.GAME_OVER, function(ID){
+    myEvent.addListener(GAME_MSG.GAME_OVER, function (ID) {
 
     });
 
     //Todo:页面上的运动对象，如船，Canvas.
 
 
-    var PC = function(){
+    var PC = function () {
 
         //生成二维码.
         this.generateQRCode();
@@ -54,19 +54,19 @@
     };
     PC.prototype = {
         constructor: PC,
-        initSocket: function(){
+        initSocket: function () {
             var serverUrl = window.location.origin + CONST_VAR.PORT
                 ;
             this.socket = io.connect(serverUrl);
         },
-        listen: function(){
+        listen: function () {
 
             var _self = this,
                 tokenArr = [],
                 $mQrCode = $('.mQrCode')
                 ;
 
-            for(var i = 0, len = $mQrCode.length; i < len; i++){
+            for (var i = 0, len = $mQrCode.length; i < len; i++) {
                 tokenArr.push($mQrCode.eq(i).attr('data-token'));
             }
 
@@ -83,27 +83,27 @@
                 alert(data.shakeArg.ID);
             });
         },
-        getSocket: function(){
+        getSocket: function () {
             return this.socket;
         },
-        generateQRCode: function(el){
+        generateQRCode: function (el) {
             var urlDir = window.location.href;
             var $mQrCode = $('.mQrCode');
 
             var qrCodeConfig = {
-                text:"",
-                width:150,
-                height:150,
-                colorDark:"#000000",
-                colorLight:"#ffffff",
-                correctLevel:QRCode.CorrectLevel.H
+                text: "",
+                width: 150,
+                height: 150,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             }
 
             //全部渲染.
             var mUrl = '',
                 tToken
                 ;
-            if(!el){
+            if (!el) {
                 for (var i = 0, len = $mQrCode.length; i < len; i++) {
                     mUrl = '';
                     tToken = Date.now();
@@ -112,20 +112,20 @@
                     mUrl += urlDir + '?id=' + $mQrCode.eq(i).attr('data-for') + '&token=' + tToken;
 
                     //记录Token串.
-                    $mQrCode.eq(i).attr('data-token',tToken);
+                    $mQrCode.eq(i).attr('data-token', tToken);
 
                     qrCodeConfig.text = mUrl;
                     new QRCode($mQrCode[i], qrCodeConfig);
                 }
             }
-            else{
+            else {
                 tToken = Date.now();
 
                 //生成className  ID  、token
                 mUrl += urlDir + '?id=' + $mQrCode.eq(i).parent()[0].className + '&token=' + tToken;
 
                 //记录Token串.
-                $(el).attr('data-token',tToken);
+                $(el).attr('data-token', tToken);
 
                 qrCodeConfig.text = mUrl;
                 new QRCode(el, qrCodeConfig);
@@ -134,8 +134,7 @@
     };
 
 
-
-    var MOBILE =  function(id,token){
+    var MOBILE = function (id, token) {
         this.ID = id;
         this.Token = token;
         this.initSocket();
@@ -144,12 +143,12 @@
 
     MOBILE.prototype = {
         constructor: MOBILE,
-        initSocket: function(){
+        initSocket: function () {
             var serverUrl = window.location.origin + CONST_VAR.PORT;
 
             this.socket = io.connect(serverUrl);
         },
-        listener: function(){
+        listener: function () {
             var _self = this
                 ;
 
@@ -178,11 +177,11 @@
             });
 
         },
-        startShake: function(){
+        startShake: function () {
             var _self = this
                 ;
 
-            window.addEventListener('shake', function(e){
+            window.addEventListener('shake', function (e) {
 
                 _self.emitShake({
                     ID: _self.ID,
@@ -196,33 +195,34 @@
             _self.shake = new window.Shake();
             _self.shake.start();
         },
-        emitShake: function(obj){
+        emitShake: function (obj) {
             this.socket.emit(CUSTOMER_MSG.M_SHAKE_REQ, {shakeArg: obj});
         }
     };
 
 
-    var Route =  {
+    var Route = {
         search: window.location.search.match(/id=(\w*)/) || '-1',   //ID
         token: window.location.search.match(/token=(\w*)/) || '-1',    //Token
-        router: function(){
+        router: function () {
 
             //PC页面
-            if(Route.search == '-1'){
+            if (Route.search == '-1') {
                 pc = new PC();
             }
             //Mobile 页面.
-            else{
+            else {
 
                 var result = tmpl(window.TMPL.mbody, { ID: Route.search[1]});
                 $('#wrapper').html(result);
 
-                mm = new MOBILE(Route.search[1],Route.token[1]);
-            };
+                mm = new MOBILE(Route.search[1], Route.token[1]);
+            }
+            ;
         }
     };
 
     Route.router();
 
 
-})(Zepto,window);
+})(Zepto, window);

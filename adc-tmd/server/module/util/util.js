@@ -1,4 +1,4 @@
-Array.prototype.contains = function(obj) {
+Array.prototype.contains = function (obj) {
     var i = this.length;
     while (i--) {
         if (this[i] === obj) {
@@ -7,7 +7,7 @@ Array.prototype.contains = function(obj) {
     }
     return false;
 };
-Array.prototype.remByVal = function(val) {
+Array.prototype.remByVal = function (val) {
     for (var i = 0; i < this.length; i++) {
         if (this[i] === val) {
             this.splice(i, 1);

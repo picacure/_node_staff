@@ -6,9 +6,8 @@ var express = require('express'),
     ;
 
 
-
 //渲染执行模块
-(function(){
+(function () {
     app.configure(function () {
         app.use(express.bodyParser());
         app.use(express.static('./static/'));
@@ -18,17 +17,17 @@ var express = require('express'),
     app.set('view engine', 'ejs');
     app.set('views', __dirname + '/views');
     app.set('view options', {
-        layout:false
+        layout: false
     });
 
     app.get('/', function (req, res) {
-        var argu =  qs.parse(url.parse(req.url).query);
+        var argu = qs.parse(url.parse(req.url).query);
 
-        if(!!argu.type){
+        if (!!argu.type) {
 
             //渲染引擎
-            if(argu.type == 1 && !!argu.title){
-                parseJSFile(libsSourceDir,argu.title);
+            if (argu.type == 1 && !!argu.title) {
+                parseJSFile(libsSourceDir, argu.title);
                 res.render('libsSource', codeResult);
             }
 
@@ -38,8 +37,8 @@ var express = require('express'),
             // }
 
         }
-        else{
-            res.render('index', {lib:libSource});
+        else {
+            res.render('index', {lib: libSource});
         }
 
     });

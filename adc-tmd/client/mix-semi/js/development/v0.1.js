@@ -1,23 +1,23 @@
-(function ($,window) {
+(function ($, window) {
 
     //框架基本消息.
     var FRM_MSG = {
-        M_CONNECT_REQ:'M_CONNECT_REQ',
-        M_CONNECT_RES:'M_CONNECT_RES',
+        M_CONNECT_REQ: 'M_CONNECT_REQ',
+        M_CONNECT_RES: 'M_CONNECT_RES',
 
-        M_TOKEN_INVALID:'M_TOKEN_INVALID',
-        M_TOKEN_OK:'M_TOKEN_OK',
+        M_TOKEN_INVALID: 'M_TOKEN_INVALID',
+        M_TOKEN_OK: 'M_TOKEN_OK',
 
-        PC_CONNECT_REQ:'PC_CONNECT_REQ',
-        PC_M_CONNECT_RES:'PC_M_CONNECT_RES'
+        PC_CONNECT_REQ: 'PC_CONNECT_REQ',
+        PC_M_CONNECT_RES: 'PC_M_CONNECT_RES'
     };
 
     var CUSTOMER_MSG = {
-        M_SHAKE_INIT:'M_SHAKE_INIT',     //PC通知M端开始摇晃.
-        M_SHAKE_REQ:'M_SHAKE_REQ',
-        M_SHAKE_RES:'M_SHAKE_RES',
+        M_SHAKE_INIT: 'M_SHAKE_INIT',     //PC通知M端开始摇晃.
+        M_SHAKE_REQ: 'M_SHAKE_REQ',
+        M_SHAKE_RES: 'M_SHAKE_RES',
 
-        PC_SHAKE_RES:'PC_SHAKE_RES'
+        PC_SHAKE_RES: 'PC_SHAKE_RES'
     };
 
     var GAME_MSG = {
@@ -36,14 +36,14 @@
     var myEvent = new EventEmitter()
         ;
 
-    myEvent.addListener(GAME_MSG.GAME_OVER, function(ID){
+    myEvent.addListener(GAME_MSG.GAME_OVER, function (ID) {
 
     });
 
     //Todo:页面上的运动对象，如船，Canvas.
 
 
-    var PC = function(){
+    var PC = function () {
         this.initSocket();
         this.listen();
 
@@ -52,12 +52,12 @@
     };
     PC.prototype = {
         constructor: PC,
-        initSocket: function(){
+        initSocket: function () {
             var serverUrl = window.location.origin + CONST_VAR.PORT
                 ;
             this.socket = io.connect(serverUrl);
         },
-        listen: function(){
+        listen: function () {
 
             var _self = this,
                 tokenArr = [],
@@ -79,13 +79,13 @@
             //摇晃数据.
             _self.socket.on(CUSTOMER_MSG.PC_SHAKE_RES, function (data) {
 
-                if(data.shakeArg.ID == 'H5'){
+                if (data.shakeArg.ID == 'H5') {
                     _self.canvas.grow();
                 }
-                else if(data.shakeArg.ID == 'IOS'){
+                else if (data.shakeArg.ID == 'IOS') {
                     _self.canvas.grow(2);
                 }
-                else{
+                else {
                     throw {
                         error: 'PC listen'
                     }
@@ -93,14 +93,13 @@
 
             });
         },
-        getSocket: function(){
+        getSocket: function () {
             return this.socket;
         }
     };
 
 
-
-    var MOBILE =  function(id,token){
+    var MOBILE = function (id, token) {
         this.ID = id;
         this.Token = token || '';
         this.initSocket();
@@ -109,12 +108,12 @@
 
     MOBILE.prototype = {
         constructor: MOBILE,
-        initSocket: function(){
+        initSocket: function () {
             var serverUrl = window.location.origin + CONST_VAR.PORT;
 
             this.socket = io.connect(serverUrl);
         },
-        listener: function(){
+        listener: function () {
             var _self = this
                 ;
 
@@ -143,7 +142,7 @@
             });
 
         },
-        startShake: function(){
+        startShake: function () {
             var _self = this
                 ;
 
@@ -174,7 +173,7 @@
 //                    });
 //                });
 //            }
-            window.addEventListener('shake', function(e){
+            window.addEventListener('shake', function (e) {
 
                 _self.emitShake({
                     ID: _self.ID,
@@ -189,63 +188,65 @@
             _self.shake.start();
 
         },
-        emitShake: function(obj){
+        emitShake: function (obj) {
             this.socket.emit(CUSTOMER_MSG.M_SHAKE_REQ, {shakeArg: obj});
         }
     };
 
 
-    var Route =  {
+    var Route = {
         IOS: window.location.search.match(/ios=(\w*)/) || '-1',   //ID
         H5: window.location.search.match(/h5=(\w*)/) || '-1',    //Token
         UriHelper: function parseURL(url) {
-            var a =  document.createElement('a');
+            var a = document.createElement('a');
             a.href = url;
             return {
                 source: url,
-                protocol: a.protocol.replace(':',''),
+                protocol: a.protocol.replace(':', ''),
                 host: a.hostname,
                 port: a.port,
                 query: a.search,
-                params: (function(){
+                params: (function () {
                     var ret = {},
-                        seg = a.search.replace(/^\?/,'').split('&'),
+                        seg = a.search.replace(/^\?/, '').split('&'),
                         len = seg.length, i = 0, s;
-                    for (;i<len;i++) {
-                        if (!seg[i]) { continue; }
+                    for (; i < len; i++) {
+                        if (!seg[i]) {
+                            continue;
+                        }
                         s = seg[i].split('=');
                         ret[s[0]] = s[1];
                     }
                     return ret;
                 })(),
-                file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1],
-                hash: a.hash.replace('#',''),
-                path: a.pathname.replace(/^([^\/])/,'/$1'),
-                relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [,''])[1],
-                segments: a.pathname.replace(/^\//,'').split('/')
+                file: (a.pathname.match(/\/([^\/?#]+)$/i) || [, ''])[1],
+                hash: a.hash.replace('#', ''),
+                path: a.pathname.replace(/^([^\/])/, '/$1'),
+                relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [, ''])[1],
+                segments: a.pathname.replace(/^\//, '').split('/')
             };
         },
-        router: function(){
+        router: function () {
 
             var params = Object.keys(Route.UriHelper(window.location.href).params);
 
             //PC页面
-            if(!params.contains('ios') && !params.contains('h5')){
+            if (!params.contains('ios') && !params.contains('h5')) {
                 pc = new PC();
             }
             //IOS.
-            else if(params.contains('ios')){
+            else if (params.contains('ios')) {
 
                 var result = tmpl(window.TMPL.mbody, { ID: 'IOS'});
                 $('#wrapper').html(result);
 
-                mm = new MOBILE('IOS','IOS');
+                mm = new MOBILE('IOS', 'IOS');
             }
-            else if(params.contains('h5')){
+            else if (params.contains('h5')) {
                 var result = tmpl(window.TMPL.mbody, { ID: 'H5'});
                 $('#wrapper').html(result);
 
-                mm = new MOBILE('H5','H5');
+                mm = new MOBILE('H5', 'H5');
             }
         }
     };
@@ -253,4 +254,4 @@
     Route.router();
 
 
-})(Zepto,window);
+})(Zepto, window);
